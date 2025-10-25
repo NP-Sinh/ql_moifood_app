@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ql_moifood_app/resources/widgets/TextFormField/custom_text_field.dart';
 import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
+import 'package:ql_moifood_app/views/dashboard/dashboard_view.dart';
 
 class LoginView extends StatefulWidget {
   static const String routeName = '/login';
@@ -70,7 +71,12 @@ class _LoginViewState extends State<LoginView> {
                     size: 50,
                     width: double.infinity,
                     height: 55,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                        context,
+                        Dashboard.routeName,
+                      );
+                    },
                   ),
                 ],
               ),

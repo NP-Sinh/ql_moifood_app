@@ -1,0 +1,96 @@
+import 'package:flutter/material.dart';
+import 'package:ql_moifood_app/views/customer/customer_view.dart';
+import 'package:ql_moifood_app/views/dashboard/widgets/overview_content.dart';
+import 'package:ql_moifood_app/views/dashboard/widgets/sidebar_menu.dart';
+import 'package:ql_moifood_app/views/dashboard/widgets/top_bar.dart';
+import 'package:ql_moifood_app/views/manage_food/food_view.dart';
+import 'package:ql_moifood_app/views/manage_orders/order_view.dart';
+import 'package:ql_moifood_app/views/reports/statistics_view.dart';
+import 'package:ql_moifood_app/views/settings/setting_view.dart';
+
+class Dashboard extends StatefulWidget {
+  static const String routeName = '/dashboard';
+  const Dashboard({super.key});
+
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+  int _selectedIndex = 0;
+
+  final List<Map<String, dynamic>> _menuItems = [
+    {'icon': Icons.dashboard_rounded, 'label': 'Tổng quan'},
+    {'icon': Icons.shopping_bag_rounded, 'label': 'Đơn hàng'},
+    {'icon': Icons.restaurant_menu_rounded, 'label': 'Món ăn'},
+    {'icon': Icons.people_rounded, 'label': 'Khách hàng'},
+    {'icon': Icons.analytics_rounded, 'label': 'Thống kê'},
+    {'icon': Icons.settings_rounded, 'label': 'Cài đặt'},
+  ];
+
+  Widget _buildMainContent(bool isDesktop, bool isTablet) {
+    switch (_selectedIndex) {
+      case 0:
+        return OverviewContent(isDesktop: isDesktop, isTablet: isTablet);
+      case 1:
+        return const OrderView();
+      case 2:
+        return const FoodView();
+      case 3:
+        return const CustomerView();
+      case 4:
+        return const StatisticsView();
+      case 5:
+        return const SettingsView();
+      default:
+        return OverviewContent(isDesktop: isDesktop, isTablet: isTablet);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final isDesktop = size.width > 1200;
+    final isTablet = size.width > 800 && size.width <= 1200;
+
+    return Scaffold(
+      backgroundColor: Colors.grey.shade100,
+      body: Row(
+        children: [
+          //Sidebar
+          SidebarMenu(
+            isDesktop: isDesktop,
+            isTablet: isTablet,
+            menuItems: _menuItems,
+            selectedIndex: _selectedIndex,
+            onMenuItemTap: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+          ),
+
+          // Main Content
+          Expanded(
+            child: Column(
+              children: [
+                //Topbar
+                const TopBar(),
+                // Nội dung chính
+                Expanded(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
+                    child: _buildMainContent(isDesktop, isTablet),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

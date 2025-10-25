@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ql_moifood_app/resources/theme/theme.dart';
 import 'package:ql_moifood_app/views/auth/login_view.dart';
+import 'package:ql_moifood_app/views/dashboard/dashboard_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +19,10 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       initialRoute: LoginView.routeName,
-      routes: {LoginView.routeName: (context) => const LoginView()},
+      routes: {
+        LoginView.routeName: (context) => const LoginView(),
+        Dashboard.routeName: (context) => const Dashboard(),
+      },
     );
   }
 }
