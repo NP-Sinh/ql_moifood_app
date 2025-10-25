@@ -52,7 +52,7 @@ class _LoginViewState extends State<LoginView> {
         }
 
         final role = profileVM.user?.role ?? 'User';
-        debugPrint("User role: $role");
+        // debugPrint("User role: $role");
 
         await AuthStorage.saveLogin(token, role: role);
 
@@ -93,11 +93,14 @@ class _LoginViewState extends State<LoginView> {
             width: 420,
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white.withOpacity(0.2)),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
               boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 12),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 12,
+                ),
               ],
             ),
             child: Column(

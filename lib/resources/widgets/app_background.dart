@@ -43,7 +43,7 @@ class _AppBackgroundState extends State<AppBackground>
   late AnimationController _iconController;
 
   final List<Color> _defaultMoiFoodColors = [
-    Colors.orange.shade900.withOpacity(0.8),
+    Colors.orange.shade900.withValues(alpha: 0.8),
     const Color(0xFF222222),
     const Color(0xFF111111),
   ];
