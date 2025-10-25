@@ -26,7 +26,10 @@ class SidebarMenu extends StatelessWidget {
       width: width,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [AppColor.orange, AppColor.orange.withValues(alpha: 0.9)], // ĐÃ SỬA
+          colors: [
+            AppColor.orange,
+            AppColor.orange.withValues(alpha: 0.9),
+          ], // ĐÃ SỬA
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -109,7 +112,7 @@ class SidebarMenu extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? Colors.white.withValues(alpha: 0.2) // ĐÃ SỬA
+                          ? Colors.white.withValues(alpha: 0.2)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(12),
                     ),

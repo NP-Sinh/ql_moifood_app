@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ql_moifood_app/views/category/category_view.dart';
 import 'package:ql_moifood_app/views/customer/customer_view.dart';
 import 'package:ql_moifood_app/views/Dashboard/widgets/overview_content.dart';
 import 'package:ql_moifood_app/views/Dashboard/widgets/sidebar_menu.dart';
@@ -22,6 +23,7 @@ class _DashboardViewState extends State<DashboardView> {
   final List<Map<String, dynamic>> _menuItems = [
     {'icon': Icons.dashboard_rounded, 'label': 'Tổng quan'},
     {'icon': Icons.shopping_bag_rounded, 'label': 'Đơn hàng'},
+    {'icon': Icons.category_rounded, 'label': 'Danh mục'},
     {'icon': Icons.restaurant_menu_rounded, 'label': 'Món ăn'},
     {'icon': Icons.people_rounded, 'label': 'Khách hàng'},
     {'icon': Icons.analytics_rounded, 'label': 'Thống kê'},
@@ -35,12 +37,14 @@ class _DashboardViewState extends State<DashboardView> {
       case 1:
         return const OrderView();
       case 2:
-        return const FoodView();
+        return const CategoryView();
       case 3:
-        return const CustomerView();
+        return const FoodView();
       case 4:
-        return const StatisticsView();
+        return const CustomerView();
       case 5:
+        return const StatisticsView();
+      case 6:
         return const SettingsView();
       default:
         return OverviewContent(isDesktop: isDesktop, isTablet: isTablet);

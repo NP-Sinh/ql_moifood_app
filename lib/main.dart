@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:ql_moifood_app/resources/helpers/auth_storage.dart';
 import 'package:ql_moifood_app/resources/theme/theme.dart';
 import 'package:ql_moifood_app/viewmodels/auth_viewmodel.dart';
+import 'package:ql_moifood_app/viewmodels/category_viewmodel.dart';
 import 'package:ql_moifood_app/viewmodels/profile_viewmodel.dart';
 import 'package:ql_moifood_app/views/auth/login_view.dart';
 import 'package:ql_moifood_app/views/Dashboard/Dashboard_view.dart';
+import 'package:ql_moifood_app/views/category/category_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +30,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => CategoryViewModel()),
       ],
       child: MyApp(initialRoute: initialRoute),
     ),
@@ -50,6 +53,7 @@ class MyApp extends StatelessWidget {
       routes: {
         LoginView.routeName: (context) => const LoginView(),
         DashboardView.routeName: (context) => const DashboardView(),
+        CategoryView.routeName: (context) => const CategoryView(),
       },
     );
   }
