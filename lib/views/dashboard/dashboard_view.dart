@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:ql_moifood_app/views/customer/customer_view.dart';
-import 'package:ql_moifood_app/views/dashboard/widgets/overview_content.dart';
-import 'package:ql_moifood_app/views/dashboard/widgets/sidebar_menu.dart';
-import 'package:ql_moifood_app/views/dashboard/widgets/top_bar.dart';
+import 'package:ql_moifood_app/views/Dashboard/widgets/overview_content.dart';
+import 'package:ql_moifood_app/views/Dashboard/widgets/sidebar_menu.dart';
+import 'package:ql_moifood_app/views/Dashboard/widgets/top_bar.dart';
 import 'package:ql_moifood_app/views/manage_food/food_view.dart';
 import 'package:ql_moifood_app/views/manage_orders/order_view.dart';
 import 'package:ql_moifood_app/views/reports/statistics_view.dart';
 import 'package:ql_moifood_app/views/settings/setting_view.dart';
 
-class Dashboard extends StatefulWidget {
-  static const String routeName = '/dashboard';
-  const Dashboard({super.key});
+class DashboardView extends StatefulWidget {
+  static const String routeName = '/DashboardView';
+  const DashboardView({super.key});
 
   @override
-  State<Dashboard> createState() => _DashboardState();
+  State<DashboardView> createState() => _DashboardViewState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class _DashboardViewState extends State<DashboardView> {
   int _selectedIndex = 0;
 
   final List<Map<String, dynamic>> _menuItems = [

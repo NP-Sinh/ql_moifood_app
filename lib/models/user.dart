@@ -1,60 +1,37 @@
 class User {
-  final Name name;
-  final Picture picture;
+  final int userId;
+  final String userName;
+  final String fullName;
   final String email;
-  final String phone;
+  final String? phone;
+  final String? address;
+  final String? avatar;
+  final String role;
+  final bool isActive;
 
-  const User({
-    required this.name,
-    required this.picture,
+  User({
+    required this.userId,
+    required this.userName,
+    required this.fullName,
     required this.email,
-    required this.phone,
+    this.phone,
+    this.address,
+    this.avatar,
+    required this.role,
+    required this.isActive,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      name: Name.fromJson(json['name']),
-      picture: Picture.fromJson(json['picture']),
-      email: json['email'] ?? '',
-      phone: json['phone'] ?? '',
+      userId: json['userId'] ?? 0,
+      userName: json['username'] as String? ?? '',
+      fullName: json['fullName'] as String? ?? '',
+      email: json['email'] as String? ?? '',
+      phone: json['phone'] as String?,
+      address: json['address'] as String?,
+      avatar: json['avatar'] as String?,
+      role: json['role'] as String? ?? 'User',
+      isActive: json['isActive'] as bool? ?? true,
     );
   }
-
-  Map<String, dynamic> toJson() => {
-        'name': name.toJson(),
-        'picture': picture.toJson(),
-        'email': email,
-        'phone': phone,
-      };
-
-  @override
-  String toString() => '$phone | $email | ${name.first}';
-}
-
-class Name {
-  final String last;
-  final String first;
-
-  const Name({required this.last, required this.first});
-
-  factory Name.fromJson(Map<String, dynamic> json) {
-    return Name(
-      last: json['last'] ?? '',
-      first: json['first'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toJson() => {'last': last, 'first': first};
-}
-
-class Picture {
-  final String medium;
-
-  const Picture({required this.medium});
-
-  factory Picture.fromJson(Map<String, dynamic> json) {
-    return Picture(medium: json['large'] ?? '');
-  }
-
-  Map<String, dynamic> toJson() => {'medium': medium};
 }

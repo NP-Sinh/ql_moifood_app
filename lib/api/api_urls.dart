@@ -1,10 +1,11 @@
 class ApiUrls {
-  static const String baseUrl = 'http://10.0.2.2:5046/moifood/';
+  static const String baseUrl = 'http://localhost:5046/moifood/';
 
   // Auth
   static final Uri login = Uri.parse('${baseUrl}auth/login');
   static final Uri logout = Uri.parse('${baseUrl}auth/logout');
-
+  // Profile
+  static final Uri getProfile = Uri.parse('${baseUrl}profile');
   // caterogy
   static final Uri modify = Uri.parse('${baseUrl}category/modify');
   static final Uri deleteCategory = Uri.parse('${baseUrl}category/delete-Category');

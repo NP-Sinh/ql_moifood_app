@@ -1,7 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:ql_moifood_app/resources/helpers/auth_storage.dart';
+import 'package:ql_moifood_app/resources/utils/app_utils.dart';
+import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
+import 'package:ql_moifood_app/views/auth/login_view.dart';
 
 class TopBar extends StatelessWidget {
   const TopBar({super.key});
+
+  Future<void> _handleLogout(BuildContext context) async {
+    final shouldLogout = await AppUtils.showConfirmDialog(
+      context,
+      title: 'Xác nhận đăng xuất',
+      message: 'Bạn có chắc muốn đăng xuất khỏi hệ thống?',
+      confirmText: 'Đăng xuất',
+      cancelText: 'Hủy',
+      confirmColor: Colors.redAccent,
+    );
+
+    if (shouldLogout == true) {
+      await AuthStorage.logout();
+      if (context.mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          LoginView.routeName,
+          (route) => false,
+        );
+      }
+    }
+  }
+
+  // Xử lý khi bấm Thông báo
+  void _handleNotificationTap(BuildContext context) {
+    // TODO: Thêm logic mở bảng thông báo tại đây
+    debugPrint("Notification button tapped!");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +43,7 @@ class TopBar extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05), // ĐÃ SỬA
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -19,7 +51,7 @@ class TopBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Search Bar
+          // 🔍 Search Bar
           Expanded(
             child: Container(
               height: 48,
@@ -43,38 +75,44 @@ class TopBar extends StatelessWidget {
               ),
             ),
           ),
+
           const SizedBox(width: 16),
 
           // Notification Icon
-          Container(
+          CustomButton(
+            onTap: () => _handleNotificationTap(context),
+            icon: Icon(
+              Icons.notifications_rounded,
+              color: Colors.grey.shade600,
+              size: 20,
+            ),
             width: 48,
             height: 48,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              borderRadius: BorderRadius.circular(12),
+            // Đặt màu nền xám giống container gốc
+            gradientColors: [Colors.grey.shade100, Colors.grey.shade100],
+            borderRadius: 12,
+            // Tắt bóng đổ
+            showShadow: false,
+            // Tinh chỉnh để Stack/icon lấp đầy 48x48
+            size: 0,
+            iconSize: 48,
+          ),
+
+          const SizedBox(width: 16),
+          CustomButton(
+            onTap: () => _handleLogout(context),
+            icon: const Icon(
+              Icons.logout_rounded,
+              color: Colors.white,
+              size: 20,
             ),
-            child: Stack(
-              children: [
-                Center(
-                  child: Icon(
-                    Icons.notifications_rounded,
-                    color: Colors.grey.shade700,
-                  ),
-                ),
-                Positioned(
-                  right: 12,
-                  top: 12,
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            height: 48,
+            width: 48,
+            gradientColors: [
+              Colors.redAccent.shade200,
+              Colors.redAccent.shade400,
+            ],
+            borderRadius: 12,
           ),
         ],
       ),
