@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ql_moifood_app/resources/theme/colors.dart';
-// Import BaseModal (đảm bảo đường dẫn đúng)
 import 'package:ql_moifood_app/resources/widgets/modals/base_modal.dart'; 
 
 enum SnackBarType { success, warning, error, info }
@@ -192,8 +191,7 @@ class AppUtils {
     );
   }
 
-  // **** THÊM LẠI HÀM NÀY ****
-  /// Hiển thị Modal cơ bản có thể tái sử dụng
+  /// Hiển thị Modal cơ bản
   static Future<T?> showBaseModal<T>(
     BuildContext context, {
     required String title,
@@ -206,7 +204,6 @@ class AppUtils {
       barrierDismissible: true,
       barrierLabel: 'Modal',
       pageBuilder: (context, anim1, anim2) {
-        // Đảm bảo BaseModal được import đúng
         return BaseModal( 
           title: title,
           primaryAction: primaryAction,
@@ -215,22 +212,20 @@ class AppUtils {
         );
       },
       // Animation (Scale và Fade)
-      transitionBuilder: (context, anim1, anim2, widgetChild) { // Đổi tên child thành widgetChild
+      transitionBuilder: (context, anim1, anim2, widgetChild) {
         return FadeTransition(
           opacity: anim1,
           child: ScaleTransition(
             scale: Tween<double>(begin: 0.9, end: 1.0).animate(
               CurvedAnimation(parent: anim1, curve: Curves.easeOutCubic),
             ),
-            // Sử dụng widgetChild thay vì child
             child: widgetChild, 
           ),
         );
       },
-      transitionDuration: const Duration(milliseconds: 300), // Thêm duration
+      transitionDuration: const Duration(milliseconds: 300), 
     );
   }
-  // **************************
 }
 
 /// Cấu hình SnackBar

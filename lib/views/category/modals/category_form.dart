@@ -43,8 +43,8 @@ class _CategoryFormState extends State<CategoryForm> {
             hintText: "Nhập tên danh mục (ví dụ: Cà phê)",
             prefixIcon: Icons.category_rounded,
             validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Tên danh mục không được để trống';
+              if (value == null || value.trim().isEmpty) {
+                return 'Không được để trống tên danh mục';
               }
               return null;
             },

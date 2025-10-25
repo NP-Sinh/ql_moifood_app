@@ -7,8 +7,8 @@ class ApiUrls {
   // Profile
   static final Uri getProfile = Uri.parse('${baseUrl}profile');
   // caterogy
-  static final Uri modify = Uri.parse('${baseUrl}category/modify');
-  static final Uri categoryGetAll = Uri.parse('${baseUrl}category/get-all');
+  static final Uri modifyCategory = Uri.parse('${baseUrl}category/modify');
+  static final Uri getAllCategory = Uri.parse('${baseUrl}category/get-all');
   static final Uri categoryGetById = Uri.parse('${baseUrl}category/getById');
   static final Uri deleteCategory = Uri.parse('${baseUrl}category/delete-Category');
   static final Uri restore = Uri.parse('${baseUrl}category/restore-Category');
