@@ -171,8 +171,7 @@ class CategoryController {
     AppUtils.showConfirmDialog(
       context,
       title: 'Xác nhận xóa',
-      message:
-          'Bạn có chắc muốn xóa danh mục "${category.name}" không? Thao tác này có thể ảnh hưởng đến các món ăn liên quan.',
+      message: 'Bạn có chắc muốn xóa danh mục "${category.name}" không?',
       confirmText: 'Xóa',
       confirmColor: Colors.redAccent,
     ).then((confirmed) async {
