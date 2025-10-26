@@ -196,4 +196,35 @@ class CategoryController {
       }
     });
   }
+
+  /// Hiển thị xác nhận khôi phục danh mục
+  void confirmRestoreCategory(Category category) {
+    AppUtils.showConfirmDialog(
+      context,
+      title: 'Xác nhận khôi phục',
+      message: 'Bạn có chắc muốn khôi phục danh mục "${category.name}" không?',
+      confirmText: 'Khôi phục',
+      confirmColor: Colors.green,
+    ).then((confirmed) async {
+      if (confirmed == true) {
+        final categoryVM = Provider.of<CategoryViewModel>(
+          context,
+          listen: false,
+        );
+        final success = await categoryVM.restoreCategory(
+          categoryId: category.categoryId,
+        );
+
+        if (context.mounted) {
+          AppUtils.showSnackBar(
+            context,
+            success
+                ? 'Đã khôi phục danh mục ${category.name}'
+                : categoryVM.errorMessage ?? 'Khôi phục thất bại',
+            type: success ? SnackBarType.success : SnackBarType.error,
+          );
+        }
+      }
+    });
+  }
 }

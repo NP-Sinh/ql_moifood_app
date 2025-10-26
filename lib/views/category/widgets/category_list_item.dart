@@ -5,14 +5,18 @@ import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
 
 class CategoryListItem extends StatefulWidget {
   final Category category;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
+  final bool isDeleted;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+  final VoidCallback? onRestore;
 
   const CategoryListItem({
     super.key,
     required this.category,
-    required this.onEdit,
-    required this.onDelete,
+    this.isDeleted = false,
+    this.onEdit,
+    this.onDelete,
+    this.onRestore,
   });
 
   @override
@@ -24,6 +28,20 @@ class _CategoryListItemState extends State<CategoryListItem> {
 
   @override
   Widget build(BuildContext context) {
+    // Xác định màu sắc dựa trên trạng thái
+    final Color hoverColor = widget.isDeleted
+        ? Colors.grey.shade400
+        : AppColor.orange;
+    final List<Color> bgGradient = widget.isDeleted
+        ? [Colors.grey.shade200, Colors.grey.shade100]
+        : [Colors.white, Colors.grey.shade50];
+    final List<Color> iconGradient = widget.isDeleted
+        ? [Colors.grey.shade500, Colors.grey.shade600]
+        : [AppColor.orange, AppColor.orange.withValues(alpha: 0.8)];
+    final IconData iconData = widget.isDeleted
+        ? Icons.delete_sweep_rounded
+        : Icons.category_rounded;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -32,27 +50,37 @@ class _CategoryListItemState extends State<CategoryListItem> {
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.white, Colors.grey.shade50],
+            colors: bgGradient,
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: _isHovered
-                ? AppColor.orange.withValues(alpha: 0.3)
-                : Colors.grey.shade200,
+                ? hoverColor.withOpacity(0.3)
+                : (widget.isDeleted
+                      ? Colors.grey.shade300
+                      : Colors.grey.shade200),
             width: 2,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: _isHovered
-                  ? AppColor.orange.withValues(alpha: 0.1)
-                  : Colors.black.withValues(alpha: 0.05),
-              blurRadius: _isHovered ? 20 : 10,
-              offset: Offset(0, _isHovered ? 8 : 4),
-              spreadRadius: _isHovered ? 2 : 0,
-            ),
-          ],
+          boxShadow: widget.isDeleted
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 5,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : [
+                  BoxShadow(
+                    color: _isHovered
+                        ? hoverColor.withOpacity(0.1)
+                        : Colors.black.withOpacity(0.05),
+                    blurRadius: _isHovered ? 20 : 10,
+                    offset: Offset(0, _isHovered ? 8 : 4),
+                    spreadRadius: _isHovered ? 2 : 0,
+                  ),
+                ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -64,24 +92,20 @@ class _CategoryListItemState extends State<CategoryListItem> {
                 height: 64,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColor.orange, AppColor.orange.withValues(alpha: 0.8)],
+                    colors: iconGradient,
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColor.orange.withValues(alpha: 0.3),
+                      color: hoverColor.withOpacity(0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
                   ],
                 ),
-                child: const Icon(
-                  Icons.category_rounded,
-                  size: 32,
-                  color: Colors.white,
-                ),
+                child: Icon(iconData, size: 32, color: Colors.white),
               ),
               const SizedBox(width: 16),
 
@@ -94,10 +118,15 @@ class _CategoryListItemState extends State<CategoryListItem> {
                     // Tên category
                     Text(
                       widget.category.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: widget.isDeleted
+                            ? Colors.black54
+                            : Colors.black87,
+                        decoration: widget.isDeleted
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
                         letterSpacing: -0.5,
                       ),
                       maxLines: 1,
@@ -112,6 +141,9 @@ class _CategoryListItemState extends State<CategoryListItem> {
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: Colors.grey.shade600,
+                        decoration: widget.isDeleted
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
                         height: 1.3,
                       ),
                       maxLines: 2,
@@ -121,48 +153,58 @@ class _CategoryListItemState extends State<CategoryListItem> {
                 ),
               ),
               const SizedBox(width: 16),
-
-              // Action buttons
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Edit button
-                  CustomButton(
-                    width: 44,
-                    height: 44,
-                    iconSize: 22,
-                    icon: const Icon(Icons.edit_rounded, color: Colors.white),
-                    gradientColors: [
-                      Colors.blue.shade400,
-                      Colors.blue.shade600,
-                    ],
-                    onTap: widget.onEdit,
-                    borderRadius: 12,
-                  ),
-                  const SizedBox(width: 8),
-
-                  // Delete button
-                  CustomButton(
-                    width: 44,
-                    height: 44,
-                    iconSize: 22,
-                    icon: const Icon(
-                      Icons.delete_outline_rounded,
-                      color: Colors.white,
-                    ),
-                    gradientColors: [
-                      Colors.redAccent.shade200,
-                      Colors.redAccent.shade400,
-                    ],
-                    onTap: widget.onDelete,
-                    borderRadius: 12,
-                  ),
-                ],
-              ),
+              widget.isDeleted ? _buildRestoreButton() : _buildActiveButtons(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  /// Widget cho các nút Sửa và Xóa
+  Widget _buildActiveButtons() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Edit button
+        CustomButton(
+          width: 44,
+          height: 44,
+          iconSize: 22,
+          icon: const Icon(Icons.edit_rounded, color: Colors.white),
+          gradientColors: [Colors.blue.shade400, Colors.blue.shade600],
+          onTap: widget.onEdit,
+          borderRadius: 12,
+        ),
+        const SizedBox(width: 8),
+
+        // Delete button
+        CustomButton(
+          width: 44,
+          height: 44,
+          iconSize: 22,
+          icon: const Icon(Icons.delete_outline_rounded, color: Colors.white),
+          gradientColors: [
+            Colors.redAccent.shade200,
+            Colors.redAccent.shade400,
+          ],
+          onTap: widget.onDelete,
+          borderRadius: 12,
+        ),
+      ],
+    );
+  }
+
+  /// Widget cho nút Khôi phục
+  Widget _buildRestoreButton() {
+    return CustomButton(
+      width: 44,
+      height: 44,
+      iconSize: 22,
+      icon: const Icon(Icons.restore_from_trash_rounded, color: Colors.white),
+      gradientColors: [Colors.green.shade500, Colors.green.shade700],
+      onTap: widget.onRestore,
+      borderRadius: 12,
     );
   }
 }

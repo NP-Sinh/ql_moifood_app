@@ -9,9 +9,10 @@ class ApiUrls {
   // caterogy
   static final Uri modifyCategory = Uri.parse('${baseUrl}category/modify');
   static final Uri getAllCategory = Uri.parse('${baseUrl}category/get-all');
+  static final Uri getDeletedCategory = Uri.parse('${baseUrl}category/get-deleted');
   static final Uri categoryGetById = Uri.parse('${baseUrl}category/getById');
   static final Uri deleteCategory = Uri.parse('${baseUrl}category/delete-Category');
-  static final Uri restore = Uri.parse('${baseUrl}category/restore-Category');
+  static final Uri restoreCategory = Uri.parse('${baseUrl}category/restore-Category');
 
   // food
   static final Uri foodModify = Uri.parse('${baseUrl}food/modify');

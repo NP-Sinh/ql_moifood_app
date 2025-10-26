@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:ql_moifood_app/api/api_urls.dart';
+import 'package:ql_moifood_app/resources/helpers/auth_storage.dart';
 import '../models/category.dart';
 
 class ApiCategory {
@@ -86,6 +87,46 @@ class ApiCategory {
       }
     } catch (e, st) {
       _logger.e('Lỗi xóa danh mục', error: e, stackTrace: st);
+      return false;
+    }
+  }
+  // GET: Lấy tất cả danh mục ĐÃ XÓA
+  Future<List<Category>> getDeletedCategory() async {
+    try {
+      final response = await http.get(ApiUrls.getDeletedCategory, 
+        headers: _getHeaders(token: await AuthStorage.getToken())
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((json) => Category.fromJson(json)).toList();
+      } else {
+        _logger.w('Lấy danh mục đã xóa thất bại: ${response.statusCode}');
+        return [];
+      }
+    } catch (e, st) {
+      _logger.e('Lỗi lấy danh mục đã xóa', error: e, stackTrace: st);
+      return [];
+    }
+  }
+  // POST: Restore danh mục
+  Future<bool> restoreCategory({required int id, required String token}) async {
+    try {
+      final uri = ApiUrls.restoreCategory.replace(
+        queryParameters: {'id': id.toString()},
+      );
+
+      final response = await http.post(uri, headers: _getHeaders(token: token));
+
+      if (response.statusCode == 200) {
+        _logger.i('Khôi phục danh mục thành công');
+        return true;
+      } else {
+        _logger.w('Khôi phục thất bại: ${response.statusCode}');
+        return false;
+      }
+    } catch (e, st) {
+      _logger.e('Lỗi khôi phục danh mục', error: e, stackTrace: st);
       return false;
     }
   }

@@ -14,59 +14,64 @@ class CategoryView extends StatefulWidget {
   State<CategoryView> createState() => _CategoryViewState();
 }
 
-class _CategoryViewState extends State<CategoryView> {
+// THÊM "with TickerProviderStateMixin"
+class _CategoryViewState extends State<CategoryView>
+    with TickerProviderStateMixin {
   late final CategoryController _controller;
+  late final TabController _tabController; // THÊM
 
   @override
   void initState() {
     super.initState();
     _controller = CategoryController(context);
+    // KHỞI TẠO TAB CONTROLLER VỚI 2 TAB
+    _tabController = TabController(length: 2, vsync: this);
     Future.microtask(() => _controller.loadCategories());
   }
 
   @override
-  Widget build(BuildContext context) {
-    final categoryVM = context.watch<CategoryViewModel>();
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       key: const PageStorageKey('category_view'),
       backgroundColor: Colors.grey.shade100,
       body: Column(
         children: [
           _buildHeader(),
+          // THÊM TABBAR
+          Container(
+            color: Colors.white,
+            child: TabBar(
+              controller: _tabController,
+              tabs: const [
+                Tab(text: 'Đang hoạt động'),
+                Tab(text: 'Đã xóa'),
+              ],
+              labelColor: AppColor.primary,
+              unselectedLabelColor: Colors.grey.shade600,
+              indicatorColor: AppColor.primary,
+            ),
+          ),
           Expanded(
-            child: categoryVM.isLoading && categoryVM.category.isEmpty
-                ? const Center(child: CircularProgressIndicator())
-                : categoryVM.errorMessage != null &&
-                        categoryVM.category.isEmpty
-                    ? Center(child: Text('Lỗi: ${categoryVM.errorMessage}'))
-                    : categoryVM.category.isEmpty
-                        ? const Center(child: Text('Không có danh mục nào.'))
-                        : RefreshIndicator(
-                            onRefresh: _controller.loadCategories,
-                            child: ListView.builder(
-                              itemCount: categoryVM.category.length,
-                              itemBuilder: (context, index) {
-                                final category = categoryVM.category[index];
-                                return CategoryListItem(
-                                  key: ValueKey(category.categoryId),
-                                  category: category,
-                                  onEdit: () =>
-                                      _controller.showEditCategoryModal(
-                                          category),
-                                  onDelete: () =>
-                                      _controller.confirmDeleteCategory(
-                                          category),
-                                );
-                              },
-                            ),
-                          ),
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildActiveCategoriesList(),
+                _buildDeletedCategoriesList(),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
+  // Header
   Widget _buildHeader() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
@@ -80,7 +85,11 @@ class _CategoryViewState extends State<CategoryView> {
           Consumer<CategoryViewModel>(
             builder: (context, vm, _) => CustomButton(
               label: "Thêm mới",
-              icon: const Icon(Icons.add_rounded, color: Colors.white, size: 20),
+              icon: const Icon(
+                Icons.add_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
               height: 48,
               fontSize: 14,
               gradientColors: AppColor.btnAdd,
@@ -89,6 +98,76 @@ class _CategoryViewState extends State<CategoryView> {
           ),
         ],
       ),
+    );
+  }
+
+  /// WIDGET CHO TAB 1
+  Widget _buildActiveCategoriesList() {
+    return Consumer<CategoryViewModel>(
+      builder: (context, categoryVM, _) {
+        if (categoryVM.isLoading && categoryVM.category.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (categoryVM.errorMessage != null && categoryVM.category.isEmpty) {
+          return Center(child: Text('Lỗi: ${categoryVM.errorMessage}'));
+        }
+        if (categoryVM.category.isEmpty) {
+          return const Center(child: Text('Không có danh mục nào.'));
+        }
+        return RefreshIndicator(
+          onRefresh: _controller.loadCategories,
+          child: ListView.builder(
+            itemCount: categoryVM.category.length,
+            itemBuilder: (context, index) {
+              final category = categoryVM.category[index];
+              return CategoryListItem(
+                key: ValueKey(category.categoryId),
+                category: category,
+                onEdit: () => _controller.showEditCategoryModal(category),
+                onDelete: () => _controller.confirmDeleteCategory(category),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  /// WIDGET MỚI CHO TAB 2
+  Widget _buildDeletedCategoriesList() {
+    return Consumer<CategoryViewModel>(
+      builder: (context, categoryVM, _) {
+        if (categoryVM.isLoading && categoryVM.deletedCategories.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (categoryVM.errorMessage != null &&
+            categoryVM.deletedCategories.isEmpty) {
+          return Center(child: Text('Lỗi: ${categoryVM.errorMessage}'));
+        }
+        if (categoryVM.deletedCategories.isEmpty) {
+          return const Center(child: Text('Không có danh mục đã xóa.'));
+        }
+
+        return RefreshIndicator(
+          onRefresh: _controller.loadCategories,
+          child: ListView.builder(
+            itemCount: categoryVM.deletedCategories.length,
+            itemBuilder: (context, index) {
+              final category = categoryVM.deletedCategories[index];
+              return CategoryListItem(
+                key: ValueKey('deleted_${category.categoryId}'),
+                category: category,
+                isDeleted: true,
+                onRestore: categoryVM.isLoading
+                    ? null
+                    : () {
+                        _controller.confirmRestoreCategory(category);
+                      },
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

@@ -9,6 +9,9 @@ class CategoryViewModel extends ChangeNotifier {
   List<Category> _category = [];
   List<Category> get category => _category;
 
+  List<Category> _deletedCategories = [];
+  List<Category> get deletedCategories => _deletedCategories;
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
@@ -32,9 +35,17 @@ class CategoryViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _category = await _api.getAllCategory();
+      final results = await Future.wait([
+        _api.getAllCategory(),
+        _api.getDeletedCategory(),
+      ]);
+
+      _category = results[0];
+      _deletedCategories = results[1];
     } catch (e) {
       _errorMessage = e.toString();
+      _category = [];
+      _deletedCategories = [];
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -65,7 +76,7 @@ class CategoryViewModel extends ChangeNotifier {
         await fetchCategories();
         return true;
       }
-      
+
       _errorMessage = 'Thêm danh mục thất bại';
       return false;
     } catch (e) {
@@ -102,7 +113,7 @@ class CategoryViewModel extends ChangeNotifier {
         await fetchCategories();
         return true;
       }
-      
+
       _errorMessage = 'Cập nhật danh mục thất bại';
       return false;
     } catch (e) {
@@ -124,17 +135,42 @@ class CategoryViewModel extends ChangeNotifier {
       final token = await _getToken();
       if (token == null) return false;
 
-      final success = await _api.deleteCategory(
-        id: categoryId,
-        token: token,
-      );
+      final success = await _api.deleteCategory(id: categoryId, token: token);
 
       if (success) {
         await fetchCategories();
         return true;
       }
-      
+
       _errorMessage = 'Xóa danh mục thất bại';
+      return false;
+    } catch (e) {
+      _errorMessage = e.toString();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // Khôi phục danh mục
+  Future<bool> restoreCategory({required int categoryId}) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final token = await _getToken();
+      if (token == null) return false;
+
+      final success = await _api.restoreCategory(id: categoryId, token: token);
+
+      if (success) {
+        await fetchCategories();
+        return true;
+      }
+
+      _errorMessage = 'Khôi phục danh mục thất bại';
       return false;
     } catch (e) {
       _errorMessage = e.toString();
@@ -147,7 +183,7 @@ class CategoryViewModel extends ChangeNotifier {
 
   // Reset
   void reset() {
-    _category= [];
+    _category = [];
     _errorMessage = null;
     _isLoading = false;
     notifyListeners();
