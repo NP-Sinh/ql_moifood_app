@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ql_moifood_app/resources/helpers/auth_storage.dart';
-import 'package:ql_moifood_app/resources/utils/app_utils.dart';
 import 'package:ql_moifood_app/resources/widgets/TextFormField/custom_text_field.dart';
 import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
+import 'package:ql_moifood_app/resources/widgets/dialogs/app_utils.dart';
+import 'package:ql_moifood_app/resources/widgets/dialogs/configs/snackbar_config.dart';
 import 'package:ql_moifood_app/viewmodels/auth_viewmodel.dart';
 import 'package:ql_moifood_app/viewmodels/profile_viewmodel.dart';
 import 'package:ql_moifood_app/views/dashboard/dashboard_view.dart';

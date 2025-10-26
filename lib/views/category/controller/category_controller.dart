@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ql_moifood_app/models/category.dart';
+import 'package:ql_moifood_app/resources/widgets/dialogs/app_utils.dart';
+import 'package:ql_moifood_app/resources/widgets/dialogs/configs/snackbar_config.dart';
 import 'package:ql_moifood_app/viewmodels/category_viewmodel.dart';
-import 'package:ql_moifood_app/resources/utils/app_utils.dart';
 import 'package:ql_moifood_app/resources/theme/colors.dart';
 import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
 import 'package:ql_moifood_app/views/category/modals/category_form.dart';
