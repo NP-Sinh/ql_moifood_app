@@ -57,7 +57,7 @@ class _CategoryListItemState extends State<CategoryListItem> {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: _isHovered
-                ? hoverColor.withOpacity(0.3)
+                ? hoverColor.withValues(alpha: 0.3)
                 : (widget.isDeleted
                       ? Colors.grey.shade300
                       : Colors.grey.shade200),
@@ -66,7 +66,7 @@ class _CategoryListItemState extends State<CategoryListItem> {
           boxShadow: widget.isDeleted
               ? [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
+                    color: Colors.black.withValues(alpha: 0.04),
                     blurRadius: 5,
                     offset: const Offset(0, 2),
                   ),
@@ -74,8 +74,8 @@ class _CategoryListItemState extends State<CategoryListItem> {
               : [
                   BoxShadow(
                     color: _isHovered
-                        ? hoverColor.withOpacity(0.1)
-                        : Colors.black.withOpacity(0.05),
+                        ? hoverColor.withValues(alpha: 0.1)
+                        : Colors.black.withValues(alpha: 0.05),
                     blurRadius: _isHovered ? 20 : 10,
                     offset: Offset(0, _isHovered ? 8 : 4),
                     spreadRadius: _isHovered ? 2 : 0,
@@ -99,7 +99,7 @@ class _CategoryListItemState extends State<CategoryListItem> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: hoverColor.withOpacity(0.3),
+                      color: hoverColor.withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),

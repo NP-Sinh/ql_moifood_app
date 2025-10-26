@@ -4,6 +4,7 @@ import 'package:ql_moifood_app/viewmodels/category_viewmodel.dart';
 import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
 import 'package:ql_moifood_app/resources/theme/colors.dart';
 import 'package:ql_moifood_app/views/category/controller/category_controller.dart';
+import 'package:ql_moifood_app/views/category/widgets/category_empty.dart';
 import 'package:ql_moifood_app/views/category/widgets/category_list_item.dart';
 
 class CategoryView extends StatefulWidget {
@@ -14,17 +15,15 @@ class CategoryView extends StatefulWidget {
   State<CategoryView> createState() => _CategoryViewState();
 }
 
-// THÊM "with TickerProviderStateMixin"
 class _CategoryViewState extends State<CategoryView>
     with TickerProviderStateMixin {
   late final CategoryController _controller;
-  late final TabController _tabController; // THÊM
+  late final TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _controller = CategoryController(context);
-    // KHỞI TẠO TAB CONTROLLER VỚI 2 TAB
     _tabController = TabController(length: 2, vsync: this);
     Future.microtask(() => _controller.loadCategories());
   }
@@ -42,19 +41,71 @@ class _CategoryViewState extends State<CategoryView>
       backgroundColor: Colors.grey.shade100,
       body: Column(
         children: [
-          _buildHeader(),
-          // THÊM TABBAR
+          // Header và TabBar
           Container(
-            color: Colors.white,
-            child: TabBar(
-              controller: _tabController,
-              tabs: const [
-                Tab(text: 'Đang hoạt động'),
-                Tab(text: 'Đã xóa'),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
               ],
-              labelColor: AppColor.primary,
-              unselectedLabelColor: Colors.grey.shade600,
-              indicatorColor: AppColor.primary,
+            ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                  child: _buildHeader(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+                  child: Container(
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                    padding: const EdgeInsets.all(4),
+                    child: TabBar(
+                      controller: _tabController,
+                      tabs: const [
+                        Tab(text: 'Đang hoạt động'),
+                        Tab(text: 'Đã xóa'),
+                      ],
+                      indicator: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.orangeAccent, Colors.deepOrange],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(18),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColor.primary.withValues(alpha: 0.3),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      labelColor: Colors.white,
+                      labelStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                      unselectedLabelColor: Colors.black54,
+                      unselectedLabelStyle: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                      splashBorderRadius: BorderRadius.circular(18),
+                      dividerColor: Colors.transparent,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -73,31 +124,24 @@ class _CategoryViewState extends State<CategoryView>
 
   // Header
   Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            'Quản lý Danh mục',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          'Quản lý Danh mục',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        Consumer<CategoryViewModel>(
+          builder: (context, vm, _) => CustomButton(
+            label: "Thêm mới",
+            icon: const Icon(Icons.add_rounded, color: Colors.white, size: 20),
+            height: 48,
+            fontSize: 14,
+            gradientColors: AppColor.btnAdd,
+            onTap: vm.isLoading ? null : _controller.showAddCategoryModal,
           ),
-          Consumer<CategoryViewModel>(
-            builder: (context, vm, _) => CustomButton(
-              label: "Thêm mới",
-              icon: const Icon(
-                Icons.add_rounded,
-                color: Colors.white,
-                size: 20,
-              ),
-              height: 48,
-              fontSize: 14,
-              gradientColors: AppColor.btnAdd,
-              onTap: vm.isLoading ? null : _controller.showAddCategoryModal,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -112,8 +156,12 @@ class _CategoryViewState extends State<CategoryView>
           return Center(child: Text('Lỗi: ${categoryVM.errorMessage}'));
         }
         if (categoryVM.category.isEmpty) {
-          return const Center(child: Text('Không có danh mục nào.'));
+          return CategoryEmpty(
+            message: 'Không có danh mục nào.',
+            onRefresh: _controller.loadCategories,
+          );
         }
+
         return RefreshIndicator(
           onRefresh: _controller.loadCategories,
           child: ListView.builder(
@@ -133,7 +181,7 @@ class _CategoryViewState extends State<CategoryView>
     );
   }
 
-  /// WIDGET MỚI CHO TAB 2
+  /// WIDGET CHO TAB 2
   Widget _buildDeletedCategoriesList() {
     return Consumer<CategoryViewModel>(
       builder: (context, categoryVM, _) {
@@ -145,7 +193,11 @@ class _CategoryViewState extends State<CategoryView>
           return Center(child: Text('Lỗi: ${categoryVM.errorMessage}'));
         }
         if (categoryVM.deletedCategories.isEmpty) {
-          return const Center(child: Text('Không có danh mục đã xóa.'));
+          return CategoryEmpty(
+            message: 'Không có danh mục đã xóa.',
+            icon: Icons.delete_outline,
+            onRefresh: _controller.loadCategories,
+          );
         }
 
         return RefreshIndicator(
