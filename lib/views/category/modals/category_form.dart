@@ -55,6 +55,7 @@ class _CategoryFormState extends State<CategoryForm> {
             labelText: "Mô tả (Không bắt buộc)",
             hintText: "Nhập mô tả ngắn...",
             prefixIcon: Icons.description_rounded,
+            maxLines: 3,
           ),
         ],
       ),

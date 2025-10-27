@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ql_moifood_app/resources/theme/colors.dart';
 
 enum LabelPosition { outside, inside, none }
@@ -13,10 +14,10 @@ class CustomTextField extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final List<Color>? gradientColors;
   final LabelPosition labelPosition;
-
-  // Thêm tùy chọn màu chữ label và hint
   final Color? labelColor;
   final Color? hintColor;
+  final List<TextInputFormatter>? inputFormatters;
+  final int? maxLines;
 
   const CustomTextField({
     super.key,
@@ -31,6 +32,8 @@ class CustomTextField extends StatefulWidget {
     this.labelPosition = LabelPosition.outside,
     this.labelColor,
     this.hintColor,
+    this.inputFormatters,
+    this.maxLines,
   });
 
   @override
@@ -48,46 +51,46 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-    final hasLabel =
-        widget.labelText != null && widget.labelText!.trim().isNotEmpty;
-
-    // phần label hiển thị ngoài
-    final labelOutside =
-        hasLabel &&
-        (widget.labelPosition == LabelPosition.outside ||
-            widget.labelPosition == LabelPosition.none);
-
-    // Màu mặc định tự động dựa theo theme
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final defaultLabelColor = isDarkMode
-        ? Colors.white
-        : AppColor.black.withValues(alpha: 0.8);
-    final defaultHintColor = isDarkMode ? Colors.white70 : AppColor.textLight;
+    final defaultHintColor = isDarkMode ? Colors.white60 : Colors.grey.shade500;
+
+    Widget labelWidget = const SizedBox.shrink();
+    if (widget.labelText != null &&
+        widget.labelPosition == LabelPosition.outside) {
+      labelWidget = Padding(
+        padding: const EdgeInsets.only(left: 4.0, bottom: 6.0),
+        child: Text(
+          widget.labelText!,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color:
+                widget.labelColor ??
+                (isDarkMode ? Colors.white70 : Colors.black87),
+          ),
+        ),
+      );
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (labelOutside) ...[
-          Text(
-            widget.labelText!,
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              fontWeight: FontWeight.w600,
-              color: widget.labelColor ?? defaultLabelColor,
-            ),
-          ),
-          const SizedBox(height: 8),
-        ],
+        labelWidget,
         TextFormField(
           controller: widget.controller,
-          obscureText: widget.isPassword ? _obscureText : false,
           keyboardType: widget.keyboardType,
+          obscureText: _obscureText,
           validator: widget.validator,
+          inputFormatters: widget.inputFormatters,
+          maxLines: widget.isPassword ? 1 : widget.maxLines,
+
           decoration: InputDecoration(
             labelText: widget.labelPosition == LabelPosition.inside
                 ? widget.labelText
                 : null,
             labelStyle: TextStyle(
-              color: widget.labelColor ?? defaultLabelColor,
+              color: widget.labelColor ?? defaultHintColor,
+              fontWeight: FontWeight.w400,
             ),
             hintText: widget.hintText,
             hintStyle: TextStyle(color: widget.hintColor ?? defaultHintColor),

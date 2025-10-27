@@ -16,13 +16,16 @@ class BaseModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
     return Dialog(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      insetPadding: const EdgeInsets.all(16),
+      insetPadding: EdgeInsets.symmetric(
+        horizontal: screenSize.width * 0.1,
+        vertical: screenSize.height * 0.1,
+      ),
       child: Container(
-        width: 500,
-        constraints: const BoxConstraints(maxHeight: 700),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
@@ -34,62 +37,70 @@ class BaseModal extends StatelessWidget {
             ),
           ],
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 20, 16, 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min, 
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 20, 16, 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close_rounded),
-                    color: Colors.grey.shade600,
-                    splashRadius: 24,
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
+                    IconButton(
+                      icon: const Icon(Icons.close_rounded),
+                      color: Colors.grey.shade600,
+                      splashRadius: 24,
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const Divider(height: 1, thickness: 1),
-            Flexible(
-              child: SingleChildScrollView(
-                child: Padding(
+              const Divider(height: 1, thickness: 1),
+
+              // Nội dung
+              Flexible(
+                child: SingleChildScrollView(
                   padding: const EdgeInsets.all(24.0),
                   child: child,
                 ),
               ),
-            ),
-            if (primaryAction != null || secondaryAction != null)
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade50,
-                  borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.circular(24),
+
+              // Chân modal
+              if (primaryAction != null || secondaryAction != null)
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade50,
+                    border: Border(
+                      top: BorderSide(color: Colors.grey.shade200, width: 1),
+                    ),
                   ),
-                ),
-                child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       if (secondaryAction != null) secondaryAction!,
-                      const SizedBox(width: 12),
+                      if (secondaryAction != null && primaryAction != null)
+                        const SizedBox(width: 12),
                       if (primaryAction != null) primaryAction!,
                     ],
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
