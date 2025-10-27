@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:ql_moifood_app/resources/helpers/auth_storage.dart';
 import 'package:ql_moifood_app/resources/theme/theme.dart';
@@ -13,8 +14,11 @@ import 'package:ql_moifood_app/views/category/category_view.dart';
 import 'package:ql_moifood_app/views/manage_food/food_view.dart';
 import 'package:ql_moifood_app/views/manage_orders/order_view.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await initializeDateFormatting('vi_VN', null);
 
   // Kiểm tra đăng nhập
   final isLoggedIn = await AuthStorage.isLoggedIn();
