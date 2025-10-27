@@ -4,6 +4,7 @@ class Food {
   final String description;
   final double price;
   final String imageUrl;
+  final int categoryId;
   final String? categoryName;
   final bool isAvailable;
   final bool isActive;
@@ -14,6 +15,7 @@ class Food {
     required this.description,
     required this.price,
     required this.imageUrl,
+    required this.categoryId,
     this.categoryName,
     required this.isAvailable,
     required this.isActive,
@@ -22,15 +24,16 @@ class Food {
   factory Food.fromJson(Map<String, dynamic> json) {
     String img = json['imageUrl'] ?? '';
     if (!img.startsWith('http')) {
-      img = "http://10.0.2.2:5046$img";
+      img = "http://localhost:5046$img";
     }
 
     return Food(
-      foodId: json['foodId'],
-      name: json['name'],
-      description: json['description'],
+      foodId: json['foodId'] ?? 0,
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
       price: (json['price'] ?? 0).toDouble(),
       imageUrl: img,
+      categoryId: json['categoryId'] ?? 0,
       categoryName: json['category'] != null ? json['category']['name'] : null,
       isAvailable: json['isAvailable'] ?? false,
       isActive: json['isActive'] ?? false,

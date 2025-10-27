@@ -15,6 +15,8 @@ class ApiUrls {
   static final Uri restoreCategory = Uri.parse('${baseUrl}category/restore-Category');
 
   // food
+   static final Uri foodGetAll = Uri.parse('${baseUrl}food/get-all');
+  static final Uri foodGetByCategory = Uri.parse('${baseUrl}food/get-by-category');
   static final Uri foodModify = Uri.parse('${baseUrl}food/modify');
   static final Uri setActiveStatus = Uri.parse('${baseUrl}food/set-active-status');
   static final Uri setAvailableStatus = Uri.parse('${baseUrl}food/set-available-status');
