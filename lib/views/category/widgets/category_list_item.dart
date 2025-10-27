@@ -168,6 +168,7 @@ class _CategoryListItemState extends State<CategoryListItem> {
       children: [
         // Edit button
         CustomButton(
+          tooltip: "Sửa",
           width: 44,
           height: 44,
           iconSize: 22,
@@ -180,6 +181,7 @@ class _CategoryListItemState extends State<CategoryListItem> {
 
         // Delete button
         CustomButton(
+          tooltip: "Xóa",
           width: 44,
           height: 44,
           iconSize: 22,
@@ -198,6 +200,7 @@ class _CategoryListItemState extends State<CategoryListItem> {
   /// Widget cho nút Khôi phục
   Widget _buildRestoreButton() {
     return CustomButton(
+      tooltip: "Khôi phục",
       width: 44,
       height: 44,
       iconSize: 22,

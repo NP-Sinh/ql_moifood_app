@@ -197,6 +197,7 @@ class _FoodListItemState extends State<FoodListItem> {
 
     // Nút Sửa
     final editButton = CustomButton(
+      tooltip: "Sửa",
       width: 44,
       height: 44,
       iconSize: 22,
@@ -208,6 +209,7 @@ class _FoodListItemState extends State<FoodListItem> {
 
     // Nút Xóa
     final deleteButton = CustomButton(
+      tooltip: "Xóa",
       width: 44,
       height: 44,
       iconSize: 22,
