@@ -82,7 +82,7 @@ class OrderDetailsContent extends StatelessWidget {
                 _buildInfoRow(
                   Icons.access_time,
                   'Thời gian tạo',
-                  formatDateTime(order.createdAt),
+                  formatDateTime(order.createdAt)+' - '+formatDateTime2(order.createdAt),
                 ),
               ],
             ),
