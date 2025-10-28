@@ -4,6 +4,7 @@ import 'payment.dart';
 class Order {
   final int orderId;
   final int userId;
+  final String fullName;
   final String? deliveryAddress;
   final String? note;
   final double totalAmount;
@@ -17,6 +18,7 @@ class Order {
   Order({
     required this.orderId,
     required this.userId,
+    required this.fullName,
     this.deliveryAddress,
     this.note,
     required this.totalAmount,
@@ -32,6 +34,7 @@ class Order {
     return Order(
       orderId: json['orderId'] ?? 0,
       userId: json['userId'] ?? 0,
+      fullName: json['fullName'],
       deliveryAddress: json['deliveryAddress'],
       note: json['note'],
       totalAmount: (json['totalAmount'] ?? 0).toDouble(),
@@ -44,7 +47,7 @@ class Order {
           ? DateTime.parse(json['updatedAt'])
           : null,
       orderItems:
-          (json['items'] as List<dynamic>?)
+          (json['orderItems'] as List<dynamic>?)
               ?.map((e) => OrderItem.fromJson(e))
               .toList() ??
           [],
@@ -59,6 +62,7 @@ class Order {
   Map<String, dynamic> toJson() => {
     'orderId': orderId,
     'userId': userId,
+    'fullName': fullName,
     'deliveryAddress': deliveryAddress,
     'note': note,
     'totalAmount': totalAmount,

@@ -6,7 +6,8 @@ import 'package:ql_moifood_app/models/order.dart';
 import 'package:ql_moifood_app/resources/widgets/dialogs/app_utils.dart';
 import 'package:ql_moifood_app/resources/widgets/dialogs/configs/snackbar_config.dart';
 import 'package:ql_moifood_app/viewmodels/order_viewmodel.dart';
-import 'package:ql_moifood_app/views/manage_orders/modal/order_details_content.dart'; 
+import 'package:ql_moifood_app/views/manage_orders/modal/order_details_content.dart';
+import 'package:ql_moifood_app/views/manage_orders/widgets/order_status_helper.dart';
 
 class OrderController {
   final BuildContext context;
@@ -28,7 +29,7 @@ class OrderController {
     }
   }
 
-  // Tải lại tất cả đơn hàng 
+  // Tải lại tất cả đơn hàng
   Future<void> refreshAllOrders() async {
     await _viewModel.fetchAllOrders();
     if (_viewModel.errorMessage != null && context.mounted) {
@@ -42,8 +43,8 @@ class OrderController {
 
   // Hiển thị xác nhận cập nhật trạng thái
   void confirmUpdateOrderStatus(Order order, String newStatus) {
-    String newStatusDisplay = getStatusDisplayName(newStatus);
-    String currentStatusDisplay = getStatusDisplayName(order.orderStatus ?? '');
+    String newStatusDisplay = OrderStatusHelper.getStatusDisplayName(newStatus);
+    String currentStatusDisplay = OrderStatusHelper.getStatusDisplayName(order.orderStatus ?? '');
 
     AppUtils.showConfirmDialog(
       context,
@@ -51,7 +52,7 @@ class OrderController {
       message:
           'Chuyển trạng thái đơn hàng #${order.orderId} từ "$currentStatusDisplay" sang "$newStatusDisplay"?',
       confirmText: 'Cập nhật',
-      confirmColor: getStatusColor(newStatus),
+      confirmColor: OrderStatusHelper.getStatusColor(newStatus),
     ).then((confirmed) async {
       if (confirmed == true) {
         final success = await _viewModel.updateOrderStatus(
@@ -73,31 +74,11 @@ class OrderController {
   }
 
   // Chuyển đến màn hình chi tiết
-void showOrderDetailsModal(Order order) {
+  void showOrderDetailsModal(Order order) {
     AppUtils.showBaseModal(
       context,
       title: 'Chi tiết Đơn hàng #${order.orderId}',
-      child: OrderDetailsContent(order: order), 
+      child: OrderDetailsContent(order: order),
     );
-  }
-
-  String getStatusDisplayName(String status) {
-    switch (status) {
-      case OrderStatus.pending: return 'Chờ xác nhận';
-      case OrderStatus.confirmed: return 'Đã xác nhận';
-      case OrderStatus.completed: return 'Đã hoàn thành';
-      case OrderStatus.cancelled: return 'Đã hủy';
-      default: return status; 
-    }
-  }
-
-  Color getStatusColor(String status) {
-    switch (status) {
-      case OrderStatus.pending: return Colors.orange.shade600;
-      case OrderStatus.confirmed: return Colors.blue.shade600;
-      case OrderStatus.completed: return Colors.green.shade600;
-      case OrderStatus.cancelled: return Colors.red.shade600;
-      default: return Colors.grey.shade600;
-    }
   }
 }

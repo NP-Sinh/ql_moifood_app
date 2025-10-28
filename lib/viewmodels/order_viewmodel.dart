@@ -33,6 +33,9 @@ class OrderViewModel extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
+  bool _isFetchingDetails = false;
+  bool get isFetchingDetails => _isFetchingDetails;
+
   // Lấy token
   Future<String?> _getToken() async {
     final token = await AuthStorage.getToken();
@@ -82,6 +85,31 @@ class OrderViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+  // Lấy chi tiết đơn hàng
+  Future<Order?> fetchOrderDetails(int orderId) async {
+    _isFetchingDetails = true; 
+    _errorMessage = null;
+    notifyListeners();
+
+    Order? detailedOrder;
+
+    try {
+      final token = await _getToken();
+      if (token == null) return null; 
+      detailedOrder = await _api.getOrderById(orderId: orderId, token: token);
+
+      if (detailedOrder == null) {
+        _errorMessage = 'Không tìm thấy chi tiết đơn hàng #$orderId';
+      }
+    } catch (e) {
+      _errorMessage = 'Lỗi tải chi tiết đơn hàng: ${e.toString()}';
+      detailedOrder = null;
+    } finally {
+      _isFetchingDetails = false;
+      notifyListeners();
+    }
+    return detailedOrder; 
   }
 
   // Cập nhật trạng thái đơn hàng

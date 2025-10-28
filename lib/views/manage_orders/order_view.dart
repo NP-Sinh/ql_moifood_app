@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:ql_moifood_app/viewmodels/order_viewmodel.dart';
 import 'package:ql_moifood_app/resources/theme/colors.dart';
 import 'package:ql_moifood_app/views/manage_orders/controller/order_controller.dart';
+import 'package:ql_moifood_app/views/manage_orders/widgets/order_status_helper.dart';
 import 'widgets/order_list_item.dart';
 import 'widgets/order_empty.dart';
 
@@ -26,7 +27,11 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
       length: OrderStatus.values.length,
       vsync: this,
     );
-    _controller.loadOrdersByStatus(OrderStatus.values.first);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _controller.loadOrdersByStatus(OrderStatus.values.first);
+      }
+    });
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
         final selectedStatus = OrderStatus.values[_tabController.index];
@@ -113,7 +118,7 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
         child: TabBar(
           controller: _tabController,
           tabs: OrderStatus.values.map((status) {
-            return Tab(text: _controller.getStatusDisplayName(status));
+            return Tab(text: OrderStatusHelper.getStatusDisplayName(status));
           }).toList(),
           indicator: BoxDecoration(
             gradient: LinearGradient(
@@ -165,8 +170,8 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
         if (orders.isEmpty) {
           return OrderEmpty(
             message:
-                'Không có đơn hàng nào ở trạng thái "${_controller.getStatusDisplayName(status)}".',
-            icon: _getStatusIcon(status),
+                'Không có đơn hàng nào ở trạng thái "${OrderStatusHelper.getStatusDisplayName(status)}".',
+            icon: OrderStatusHelper.getStatusIcon(status),
             onRefresh: () => _controller.loadOrdersByStatus(status),
           );
         }
@@ -207,21 +212,5 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
         );
       },
     );
-  }
-
-  // --- Helpers ---
-  IconData _getStatusIcon(String status) {
-    switch (status) {
-      case OrderStatus.pending:
-        return Icons.pending_actions_rounded;
-      case OrderStatus.confirmed:
-        return Icons.hourglass_top_rounded;
-      case OrderStatus.completed:
-        return Icons.check_circle_outline_rounded;
-      case OrderStatus.cancelled:
-        return Icons.cancel_outlined;
-      default:
-        return Icons.list_alt_rounded;
-    }
   }
 }

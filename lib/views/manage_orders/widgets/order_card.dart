@@ -4,7 +4,7 @@ import 'package:ql_moifood_app/resources/theme/colors.dart';
 import 'package:ql_moifood_app/resources/utils/formatter.dart';
 import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
 import 'package:ql_moifood_app/viewmodels/order_viewmodel.dart';
-import 'package:ql_moifood_app/views/manage_orders/controller/order_controller.dart';
+import 'package:ql_moifood_app/views/manage_orders/widgets/order_status_helper.dart';
 
 class OrderCard extends StatefulWidget {
   final Order order;
@@ -23,6 +23,7 @@ class OrderCard extends StatefulWidget {
     this.onDeliver,
     this.onCancel,
   });
+
   @override
   State<OrderCard> createState() => _OrderCardState();
 }
@@ -31,16 +32,15 @@ class _OrderCardState extends State<OrderCard> {
   @override
   Widget build(BuildContext context) {
     final status = widget.order.orderStatus ?? OrderStatus.pending;
-    final controller = OrderController(context);
-    final statusColor = controller.getStatusColor(status);
-    final statusName = controller.getStatusDisplayName(status);
+    final statusColor = OrderStatusHelper.getStatusColor(status);
+    final statusName = OrderStatusHelper.getStatusDisplayName(status);
     final isCancelled = status == OrderStatus.cancelled;
 
     final List<Color> bgGradient = isCancelled
         ? [Colors.grey.shade200, Colors.grey.shade100]
         : [Colors.white, Colors.grey.shade50];
 
-    final Color hoverColor = statusColor;
+    final Color hoverColor = AppColor.orange;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
@@ -92,7 +92,7 @@ class _OrderCardState extends State<OrderCard> {
                 ],
               ),
               child: Icon(
-                _getStatusIcon(status),
+                OrderStatusHelper.getStatusIcon(status),
                 color: Colors.white,
                 size: 32,
               ),
@@ -104,62 +104,184 @@ class _OrderCardState extends State<OrderCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Đơn hàng #${widget.order.orderId}',
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: isCancelled ? Colors.black54 : Colors.black87,
-                      decoration: isCancelled
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    formatVND(widget.order.totalAmount),
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: isCancelled
-                          ? AppColor.primary.withValues(alpha: 0.5)
-                          : AppColor.primary,
-                      decoration: isCancelled
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    formatDateTime2(widget.order.createdAt ?? DateTime.now()),
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey.shade600,
-                      decoration: isCancelled
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: statusColor.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      statusName,
-                      style: TextStyle(
-                        color: statusColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
+                  // Order ID và Status
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Đơn hàng #${widget.order.orderId}',
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: isCancelled
+                                ? Colors.black54
+                                : Colors.black87,
+                            decoration: isCancelled
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: statusColor.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: statusColor.withValues(alpha: 0.3),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              OrderStatusHelper.getStatusIcon(status),
+                              color: statusColor,
+                              size: 14,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              statusName,
+                              style: TextStyle(
+                                color: statusColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Customer Info
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          Icons.person_outline,
+                          size: 16,
+                          color: Colors.blue.shade700,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'ID: #${widget.order.userId}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade600,
+                                decoration: isCancelled
+                                    ? TextDecoration.lineThrough
+                                    : TextDecoration.none,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              widget.order.fullName,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: isCancelled
+                                    ? Colors.black54
+                                    : Colors.black87,
+                                decoration: isCancelled
+                                    ? TextDecoration.lineThrough
+                                    : TextDecoration.none,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Amount và Time
+                  Row(
+                    children: [
+                      // Amount
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isCancelled
+                              ? Colors.grey.shade100
+                              : AppColor.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.payments_outlined,
+                              size: 14,
+                              color: isCancelled
+                                  ? Colors.grey.shade600
+                                  : AppColor.primary,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              formatVND(widget.order.totalAmount),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: isCancelled
+                                    ? Colors.grey.shade600
+                                    : AppColor.primary,
+                                decoration: isCancelled
+                                    ? TextDecoration.lineThrough
+                                    : TextDecoration.none,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      // Time
+                      Icon(
+                        Icons.access_time_rounded,
+                        size: 14,
+                        color: Colors.grey.shade500,
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          formatDateTime2(
+                            widget.order.createdAt ?? DateTime.now(),
+                          ),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                            decoration: isCancelled
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -172,86 +294,113 @@ class _OrderCardState extends State<OrderCard> {
       ),
     );
   }
+
   Widget _buildActionButtons(String status) {
-     List<Widget> buttons = [];
-     buttons.add(
+    List<Widget> buttons = [];
+    buttons.add(
       CustomButton(
         tooltip: 'Xem chi tiết',
-        icon: Icon(Icons.visibility_outlined, color: Colors.grey.shade600, size: 20),
+        icon: Icon(
+          Icons.visibility_outlined,
+          color: Colors.grey.shade600,
+          size: 20,
+        ),
         onTap: widget.onViewDetails,
-        width: 44, height: 44, iconSize: 20, borderRadius: 12,
+        width: 44,
+        height: 44,
+        iconSize: 20,
+        borderRadius: 12,
         gradientColors: [Colors.grey.shade200, Colors.grey.shade100],
         showShadow: false,
-      )
+      ),
     );
+
     // Nút tùy theo trạng thái
     switch (status) {
       case OrderStatus.pending:
-        if (widget.onConfirm != null) { 
+        if (widget.onConfirm != null) {
+          buttons.add(
+            CustomButton(
+              tooltip: 'Xác nhận đơn',
+              icon: const Icon(
+                Icons.check_circle_outline_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
+              onTap: widget.onConfirm,
+              width: 44,
+              height: 44,
+              iconSize: 20,
+              borderRadius: 12,
+              gradientColors: [Colors.blue.shade500, Colors.blue.shade700],
+            ),
+          );
+        }
+        if (widget.onCancel != null) {
           if (buttons.isNotEmpty) buttons.add(const SizedBox(width: 8));
-          buttons.add(CustomButton(
-            tooltip: 'Xác nhận đơn',
-            icon: const Icon(Icons.check_circle_outline_rounded, color: Colors.white, size: 20),
-            onTap: widget.onConfirm,
-            width: 44, height: 44, iconSize: 20, borderRadius: 12,
-            gradientColors: [Colors.blue.shade500, Colors.blue.shade700],
-          ));
-        }
-        if (widget.onCancel != null) { 
-           if (buttons.isNotEmpty) buttons.add(const SizedBox(width: 8));
-           buttons.add(CustomButton(
-            tooltip: 'Hủy đơn',
-            icon: const Icon(Icons.cancel_outlined, color: Colors.white, size: 20),
-            onTap: widget.onCancel,
-            width: 44, height: 44, iconSize: 20, borderRadius: 12,
-            gradientColors: [Colors.red.shade500, Colors.red.shade700],
-          ));
+          buttons.add(
+            CustomButton(
+              tooltip: 'Hủy đơn',
+              icon: const Icon(
+                Icons.cancel_outlined,
+                color: Colors.white,
+                size: 20,
+              ),
+              onTap: widget.onCancel,
+              width: 44,
+              height: 44,
+              iconSize: 20,
+              borderRadius: 12,
+              gradientColors: [Colors.red.shade500, Colors.red.shade700],
+            ),
+          );
         }
         break;
       case OrderStatus.confirmed:
-        if (widget.onDeliver != null) { 
-           if (buttons.isNotEmpty) buttons.add(const SizedBox(width: 8));
-           buttons.add(CustomButton(
-            tooltip: 'Hoàn thành',
-            icon: const Icon(Icons.task_alt_rounded, color: Colors.white, size: 20),
-            onTap: widget.onDeliver,
-            width: 44, height: 44, iconSize: 20, borderRadius: 12,
-            gradientColors: [Colors.green.shade500, Colors.green.shade700],
-          ));
+        if (widget.onDeliver != null) {
+          if (buttons.isNotEmpty) buttons.add(const SizedBox(width: 8));
+          buttons.add(
+            CustomButton(
+              tooltip: 'Hoàn thành',
+              icon: const Icon(
+                Icons.task_alt_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
+              onTap: widget.onDeliver,
+              width: 44,
+              height: 44,
+              iconSize: 20,
+              borderRadius: 12,
+              gradientColors: [Colors.green.shade500, Colors.green.shade700],
+            ),
+          );
         }
-         if (widget.onCancel != null) {
-           if (buttons.isNotEmpty) buttons.add(const SizedBox(width: 8));
-           buttons.add(CustomButton(
-            tooltip: 'Hủy đơn',
-            icon: const Icon(Icons.cancel_outlined, color: Colors.white, size: 20),
-            onTap: widget.onCancel,
-            width: 44, height: 44, iconSize: 20, borderRadius: 12,
-            gradientColors: [Colors.red.shade500, Colors.red.shade700],
-          ));
+        if (widget.onCancel != null) {
+          if (buttons.isNotEmpty) buttons.add(const SizedBox(width: 8));
+          buttons.add(
+            CustomButton(
+              tooltip: 'Hủy đơn',
+              icon: const Icon(
+                Icons.cancel_outlined,
+                color: Colors.white,
+                size: 20,
+              ),
+              onTap: widget.onCancel,
+              width: 44,
+              height: 44,
+              iconSize: 20,
+              borderRadius: 12,
+              gradientColors: [Colors.red.shade500, Colors.red.shade700],
+            ),
+          );
         }
         break;
       case OrderStatus.completed:
       case OrderStatus.cancelled:
         break;
     }
-    return Row(
-       mainAxisSize: MainAxisSize.min,
-       children: buttons,
-    );
-  }
 
-  IconData _getStatusIcon(String status) {
-    switch (status) {
-      case OrderStatus.pending:
-        return Icons.pending_actions_rounded;
-      case OrderStatus.confirmed:
-        return Icons.hourglass_top_rounded;
-      case OrderStatus.completed:
-        return Icons.check_circle_outline_rounded;
-      case OrderStatus.cancelled:
-        return Icons.cancel_outlined;
-      default:
-        return Icons.list_alt_rounded;
-    }
+    return Row(mainAxisSize: MainAxisSize.min, children: buttons);
   }
 }
