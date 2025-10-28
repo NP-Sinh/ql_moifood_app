@@ -52,6 +52,12 @@ class OrderDetailsContent extends StatelessWidget {
                 _buildInfoRow(Icons.person, 'Tên khách hàng', order.fullName),
                 const Divider(height: 16),
                 _buildInfoRow(
+                  Icons.phone,
+                  'Số điện thoại',
+                  order.phone ?? "Chưa có",
+                ),
+                const Divider(height: 16),
+                _buildInfoRow(
                   Icons.location_on_outlined,
                   'Địa chỉ',
                   address,
@@ -82,7 +88,9 @@ class OrderDetailsContent extends StatelessWidget {
                 _buildInfoRow(
                   Icons.access_time,
                   'Thời gian tạo',
-                  formatDateTime(order.createdAt)+' - '+formatDateTime2(order.createdAt),
+                  formatDateTime(order.createdAt) +
+                      ' - ' +
+                      formatDateTime2(order.createdAt),
                 ),
               ],
             ),

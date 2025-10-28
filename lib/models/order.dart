@@ -5,6 +5,7 @@ class Order {
   final int orderId;
   final int userId;
   final String fullName;
+  final String? phone;
   final String? deliveryAddress;
   final String? note;
   final double totalAmount;
@@ -19,6 +20,7 @@ class Order {
     required this.orderId,
     required this.userId,
     required this.fullName,
+    this.phone,
     this.deliveryAddress,
     this.note,
     required this.totalAmount,
@@ -35,6 +37,7 @@ class Order {
       orderId: json['orderId'] ?? 0,
       userId: json['userId'] ?? 0,
       fullName: json['fullName'],
+      phone: json['phone'],
       deliveryAddress: json['deliveryAddress'],
       note: json['note'],
       totalAmount: (json['totalAmount'] ?? 0).toDouble(),
@@ -63,6 +66,7 @@ class Order {
     'orderId': orderId,
     'userId': userId,
     'fullName': fullName,
+    'phone': phone,
     'deliveryAddress': deliveryAddress,
     'note': note,
     'totalAmount': totalAmount,
