@@ -49,6 +49,7 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
       backgroundColor: Colors.grey.shade100,
       body: Column(
         children: [
+          // Header và TabBar
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -62,6 +63,7 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
             ),
             child: Column(children: [_buildHeader(), _buildTabBar()]),
           ),
+          // TabBarView
           Expanded(
             child: TabBarView(
               controller: _tabController,
@@ -168,26 +170,24 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
             onRefresh: () => _controller.loadOrdersByStatus(status),
           );
         }
-
-        // Hiển thị danh sách
         return RefreshIndicator(
           onRefresh: _controller.refreshAllOrders,
           child: ListView.builder(
             key: PageStorageKey('order_list_$status'),
-            itemCount: orders.length,
+            itemCount: vm.getOrdersByStatus(status).length,
             itemBuilder: (context, index) {
-              final order = orders[index];
+              final order = vm.getOrdersByStatus(status)[index];
               return OrderListItem(
                 key: ValueKey(order.orderId),
                 order: order,
-                onTap: () => _controller.navigateToOrderDetails(order),
+                onViewDetails: () => _controller.showOrderDetailsModal(order),
                 onConfirm: status == OrderStatus.pending
                     ? () => _controller.confirmUpdateOrderStatus(
                         order,
                         OrderStatus.confirmed,
                       )
                     : null,
-                onCompleted: status == OrderStatus.confirmed
+                onDeliver: status == OrderStatus.confirmed
                     ? () => _controller.confirmUpdateOrderStatus(
                         order,
                         OrderStatus.completed,

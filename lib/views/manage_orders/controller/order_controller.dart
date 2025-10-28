@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:ql_moifood_app/models/order.dart';
 import 'package:ql_moifood_app/resources/widgets/dialogs/app_utils.dart';
 import 'package:ql_moifood_app/resources/widgets/dialogs/configs/snackbar_config.dart';
-import 'package:ql_moifood_app/viewmodels/order_viewmodel.dart'; 
+import 'package:ql_moifood_app/viewmodels/order_viewmodel.dart';
+import 'package:ql_moifood_app/views/manage_orders/modal/order_details_content.dart'; 
 
 class OrderController {
   final BuildContext context;
@@ -72,8 +73,12 @@ class OrderController {
   }
 
   // Chuyển đến màn hình chi tiết
-  void navigateToOrderDetails(Order order) {
-    AppUtils.showSnackBar(context, 'Chức năng xem chi tiết đơn hàng #${order.orderId} chưa được cài đặt.');
+void showOrderDetailsModal(Order order) {
+    AppUtils.showBaseModal(
+      context,
+      title: 'Chi tiết Đơn hàng #${order.orderId}',
+      child: OrderDetailsContent(order: order), 
+    );
   }
 
   String getStatusDisplayName(String status) {
