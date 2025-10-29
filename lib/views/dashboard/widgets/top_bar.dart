@@ -100,6 +100,7 @@ class TopBar extends StatelessWidget {
 
           const SizedBox(width: 16),
           CustomButton(
+            tooltip: 'Đăng xuất',
             onTap: () => _handleLogout(context),
             icon: const Icon(
               Icons.logout_rounded,

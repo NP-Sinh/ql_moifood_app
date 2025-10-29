@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ql_moifood_app/resources/theme/colors.dart';
 import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
 import 'package:ql_moifood_app/viewmodels/order_viewmodel.dart';
 
@@ -23,17 +22,13 @@ class OrderCardActions extends StatelessWidget {
     buttons.add(
       CustomButton(
         tooltip: 'Xem chi tiết',
-        icon: Icon(
-          Icons.visibility_outlined,
-          color: Colors.grey.shade600,
-          size: 20,
-        ),
+        icon: Icon(Icons.visibility_outlined, color: Colors.white),
         onTap: onViewDetails,
         width: 44,
         height: 44,
-        iconSize: 20,
+        iconSize: 22,
         borderRadius: 12,
-        gradientColors: [Colors.grey.shade200, Colors.grey.shade100],
+        gradientColors: [Colors.blue.shade400, Colors.blue.shade600],
         showShadow: false,
       ),
     );
@@ -46,19 +41,15 @@ class OrderCardActions extends StatelessWidget {
       buttons.add(
         CustomButton(
           tooltip: 'Thay đổi trạng thái',
-          icon: Icon(
-            Icons.swap_horiz_rounded,
-            color: AppColor.orange,
-            size: 20,
-          ),
+          icon: Icon(Icons.swap_horiz_rounded, color: Colors.white),
           onTap: () => _showStatusChangeMenu(context, status),
           width: 44,
           height: 44,
-          iconSize: 20,
+          iconSize: 22,
           borderRadius: 12,
           gradientColors: [
-            AppColor.orange.withValues(alpha: 0.1),
-            AppColor.orange.withValues(alpha: 0.05),
+            Colors.deepOrange.shade400,
+            Colors.deepOrange.shade600,
           ],
           showShadow: false,
         ),
@@ -86,8 +77,14 @@ class OrderCardActions extends StatelessWidget {
     showMenu<String>(
       context: context,
       position: position,
-      elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 10,
+      shadowColor: Colors.black26,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Colors.grey.shade200),
+      ),
+      color: Colors.white,
+
       items: [
         // Confirmed option
         if (currentStatus != OrderStatus.confirmed)
