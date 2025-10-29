@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
 import 'package:ql_moifood_app/viewmodels/order_viewmodel.dart';
 import 'package:ql_moifood_app/resources/theme/colors.dart';
 import 'package:ql_moifood_app/views/manage_orders/controller/order_controller.dart';
@@ -93,11 +94,16 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
             'Quản lý Đơn hàng',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh_rounded),
-            color: AppColor.primary,
-            tooltip: 'Tải lại tất cả',
-            onPressed: () => _controller.refreshAllOrders(),
+          Consumer<OrderViewModel>(
+            builder: (context, vm, _) => CustomButton(
+              tooltip: 'Tải lại dữ liệu',
+              icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+              width: 44,
+              height: 44,
+              iconSize: 22,
+              gradientColors: AppColor.btnAdd,
+              onTap: () => _controller.refreshAllOrders(),
+            ),
           ),
         ],
       ),

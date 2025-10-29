@@ -27,7 +27,7 @@ class SidebarMenu extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColor.orange,
+            AppColor.orange.withValues(alpha: 0.9),
             AppColor.orange.withValues(alpha: 0.9),
           ], // ĐÃ SỬA
           begin: Alignment.topCenter,
