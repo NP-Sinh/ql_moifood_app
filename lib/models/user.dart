@@ -8,6 +8,8 @@ class User {
   final String? avatar;
   final String role;
   final bool isActive;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   User({
     required this.userId,
@@ -19,9 +21,16 @@ class User {
     this.avatar,
     required this.role,
     required this.isActive,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
+    String avatar = json['avatar'] ?? '';
+    if (!avatar.startsWith('http')) {
+      avatar = "http://localhost:5046$avatar";
+    }
+
     return User(
       userId: json['userId'] ?? 0,
       userName: json['username'] as String? ?? '',
@@ -29,9 +38,15 @@ class User {
       email: json['email'] as String? ?? '',
       phone: json['phone'] as String?,
       address: json['address'] as String?,
-      avatar: json['avatar'] as String?,
+      avatar: avatar,
       role: json['role'] as String? ?? 'User',
       isActive: json['isActive'] as bool? ?? true,
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : null,
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'])
+          : null,
     );
   }
 }

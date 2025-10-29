@@ -39,4 +39,8 @@ class ApiUrls {
   static final Uri getUserSpending = Uri.parse('${baseUrl}statistics/user-spending');
 
   // User
+   static final Uri getAllUser = Uri.parse('${baseUrl}user/get-all-user');
+  static final Uri getUserById = Uri.parse('${baseUrl}user/get-user-by-id');
+  static final Uri searchUser = Uri.parse('${baseUrl}user/search-user');
+  static final Uri setActiveUser = Uri.parse('${baseUrl}user/set-active-user');
 }
