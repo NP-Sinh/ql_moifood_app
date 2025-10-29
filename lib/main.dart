@@ -8,12 +8,13 @@ import 'package:ql_moifood_app/viewmodels/category_viewmodel.dart';
 import 'package:ql_moifood_app/viewmodels/food_viewmodel.dart';
 import 'package:ql_moifood_app/viewmodels/order_viewmodel.dart';
 import 'package:ql_moifood_app/viewmodels/profile_viewmodel.dart';
+import 'package:ql_moifood_app/viewmodels/statistic_viewmodel.dart';
 import 'package:ql_moifood_app/views/auth/login_view.dart';
 import 'package:ql_moifood_app/views/Dashboard/Dashboard_view.dart';
 import 'package:ql_moifood_app/views/category/category_view.dart';
 import 'package:ql_moifood_app/views/manage_food/food_view.dart';
 import 'package:ql_moifood_app/views/manage_orders/order_view.dart';
-
+import 'package:ql_moifood_app/views/reports/statistic_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +42,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CategoryViewModel()),
         ChangeNotifierProvider(create: (_) => FoodViewModel()),
         ChangeNotifierProvider(create: (_) => OrderViewModel()),
+        ChangeNotifierProvider(create: (_) => StatisticViewModel()),
       ],
       child: MyApp(initialRoute: initialRoute),
     ),
@@ -66,6 +68,7 @@ class MyApp extends StatelessWidget {
         CategoryView.routeName: (context) => const CategoryView(),
         FoodView.routeName: (context) => const FoodView(),
         OrderView.routeName: (context) => const OrderView(),
+        StatisticView.routeName: (context) => const StatisticView(),
       },
     );
   }
