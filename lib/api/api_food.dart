@@ -70,7 +70,7 @@ class FoodApi {
       // Thêm các trường
       request.fields['Name'] = name;
       request.fields['Description'] = description;
-      request.fields['Price'] = price.toString();
+      request.fields['Price'] = price.toStringAsFixed(0);
       request.fields['CategoryId'] = categoryId.toString();
       if (imageFile != null) {
         final mimeType = lookupMimeType(imageFile.path) ?? 'image/jpeg';

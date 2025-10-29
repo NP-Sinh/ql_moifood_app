@@ -66,7 +66,7 @@ class FoodController {
     final formKey = GlobalKey<FormState>();
     final nameController = TextEditingController(text: food?.name);
     final descriptionController = TextEditingController(text: food?.description);
-    final priceController = TextEditingController(text: food?.price.toString());
+    final priceController = TextEditingController(text: food?.price.toStringAsFixed(0));
 
     XFile? pickedImage;
     Category? selectedCategory;

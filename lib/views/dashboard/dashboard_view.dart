@@ -6,7 +6,7 @@ import 'package:ql_moifood_app/views/Dashboard/widgets/top_bar.dart';
 import 'package:ql_moifood_app/views/dashboard/overview_content.dart';
 import 'package:ql_moifood_app/views/manage_food/food_view.dart';
 import 'package:ql_moifood_app/views/manage_orders/order_view.dart';
-import 'package:ql_moifood_app/views/reports/statistics_view.dart';
+import 'package:ql_moifood_app/views/reports/statistic_view.dart';
 import 'package:ql_moifood_app/views/settings/setting_view.dart';
 
 class DashboardView extends StatefulWidget {
@@ -43,7 +43,7 @@ class _DashboardViewState extends State<DashboardView> {
       case 4:
         return const CustomerView();
       case 5:
-        return const StatisticsView();
+        return const StatisticView();
       case 6:
         return const SettingsView();
       default:

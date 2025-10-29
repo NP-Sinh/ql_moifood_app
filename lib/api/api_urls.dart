@@ -35,7 +35,7 @@ class ApiUrls {
   // statistics
   static final Uri getRevenue = Uri.parse('${baseUrl}statistics/revenue');
   static final Uri getOrderCount = Uri.parse('${baseUrl}statistics/order-count');
-  static final Uri getFoodOrderStats = Uri.parse('${baseUrl}statistics/food-order');
+  static final Uri getFoodOrderStats = Uri.parse('${baseUrl}statistics/food-orders');
   static final Uri getUserSpending = Uri.parse('${baseUrl}statistics/user-spending');
 
   // User
