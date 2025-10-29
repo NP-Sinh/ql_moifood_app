@@ -32,15 +32,7 @@ class ApiOrder {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
-        return data.map((jsonItem) {
-          final Map<String, dynamic> jsonMap = jsonItem as Map<String, dynamic>;
-          jsonMap['orderId'] ??= 0;
-          jsonMap['userId'] ??= 0;
-          jsonMap['totalAmount'] ??= 0.0;
-          jsonMap['orderItems'] ??= [];
-          jsonMap['payments'] ??= [];
-          return Order.fromJson(jsonMap);
-        }).toList();
+        return data.map((json) => Order.fromJson(json)).toList();
       } else {
         _logger.w('Lấy danh sách đơn hàng thất bại: ${response.statusCode}');
         return [];
@@ -64,20 +56,8 @@ class ApiOrder {
       final response = await http.get(uri, headers: _getHeaders(token: token));
 
       if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        if (data.isNotEmpty) {
-          final Map<String, dynamic> jsonMap =
-              data.first as Map<String, dynamic>;
-          jsonMap['orderId'] ??= 0;
-          jsonMap['userId'] ??= 0;
-          jsonMap['totalAmount'] ??= 0.0;
-          jsonMap['orderItems'] ??= [];
-          jsonMap['payments'] ??= [];
-          return Order.fromJson(jsonMap);
-        } else {
-          _logger.w('Không tìm thấy đơn hàng với ID: $orderId');
-          return null;
-        }
+        final data = json.decode(response.body);
+        return Order.fromJson(data);
       } else {
         _logger.w('Lấy chi tiết đơn hàng thất bại: ${response.statusCode}');
         return null;
