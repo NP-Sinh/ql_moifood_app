@@ -33,8 +33,9 @@ class FoodCard extends StatefulWidget {
 class _FoodCardState extends State<FoodCard> {
   @override
   Widget build(BuildContext context) {
-
-    final Color hoverColor = widget.isDeleted ? Colors.grey.shade400 : AppColor.orange;
+    final Color hoverColor = widget.isDeleted
+        ? Colors.grey.shade400
+        : AppColor.orange;
     final List<Color> bgGradient = widget.isDeleted
         ? [Colors.grey.shade200, Colors.grey.shade100]
         : [Colors.white, Colors.grey.shade50];
@@ -50,19 +51,21 @@ class _FoodCardState extends State<FoodCard> {
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: widget.isHovered 
+          color: widget.isHovered
               ? hoverColor.withValues(alpha: 0.3)
-              : (widget.isDeleted ? Colors.grey.shade300 : Colors.grey.shade200),
+              : (widget.isDeleted
+                    ? Colors.grey.shade300
+                    : Colors.grey.shade200),
           width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: widget.isHovered 
+            color: widget.isHovered
                 ? hoverColor.withValues(alpha: 0.1)
                 : Colors.black.withValues(alpha: 0.05),
-            blurRadius: widget.isHovered ? 20 : 10, 
-            offset: Offset(0, widget.isHovered ? 8 : 4), 
-             spreadRadius: widget.isHovered ? 2 : 0, 
+            blurRadius: widget.isHovered ? 20 : 10,
+            offset: Offset(0, widget.isHovered ? 8 : 4),
+            spreadRadius: widget.isHovered ? 2 : 0,
           ),
         ],
       ),
@@ -154,6 +157,56 @@ class _FoodCardState extends State<FoodCard> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
+                  const SizedBox(height: 4),
+                  // danh mục
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: widget.isDeleted
+                          ? Colors.grey.shade200
+                          : (isDimmed
+                                ? AppColor.orange.withValues(alpha: 0.1)
+                                : AppColor.orange.withValues(alpha: 0.15)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.category_rounded,
+                          size: 14,
+                          color: widget.isDeleted
+                              ? Colors.grey.shade500
+                              : (isDimmed
+                                    ? AppColor.orange.withValues(alpha: 0.7)
+                                    : AppColor.orange),
+                        ),
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Text(
+                            widget.food.categoryName ?? "Chưa phân loại",
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: widget.isDeleted
+                                  ? Colors.grey.shade500
+                                  : (isDimmed
+                                        ? AppColor.orange.withValues(alpha: 0.7)
+                                        : AppColor.orange),
+                              decoration: widget.isDeleted
+                                  ? TextDecoration.lineThrough
+                                  : TextDecoration.none,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -165,7 +218,7 @@ class _FoodCardState extends State<FoodCard> {
     );
   }
 
-  // tạo nút bấm 
+  // tạo nút bấm
   Widget _buildActiveButtons() {
     final toggleButton = CustomButton(
       tooltip: widget.isAvailable ? 'Ngừng bán' : 'Mở bán',
@@ -178,7 +231,7 @@ class _FoodCardState extends State<FoodCard> {
       gradientColors: widget.isAvailable
           ? [Colors.amber.shade600, Colors.amber.shade800]
           : [Colors.green.shade500, Colors.green.shade700],
-      onTap: widget.onToggleAvailable, 
+      onTap: widget.onToggleAvailable,
       width: 44,
       height: 44,
       iconSize: 22,
