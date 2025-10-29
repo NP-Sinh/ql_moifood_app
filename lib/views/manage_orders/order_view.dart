@@ -104,7 +104,7 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
     );
   }
 
-  // TabBar "Pill" style
+  // TabBar
   Widget _buildTabBar() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
