@@ -1,46 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:ql_moifood_app/viewmodels/order_viewmodel.dart';
 
 class OrderStatusHelper {
-  static String getStatusDisplayName(String status) {
-    switch (status) {
-      case OrderStatus.pending:
+  static String getStatusDisplayName(String? status) {
+    switch (status?.toLowerCase()) {
+      case 'pending': 
         return 'Chờ xác nhận';
-      case OrderStatus.confirmed:
+      case 'confirmed': 
         return 'Đã xác nhận';
-      case OrderStatus.completed:
+      case 'completed': 
         return 'Đã hoàn thành';
-      case OrderStatus.cancelled:
+      case 'cancelled': 
         return 'Đã hủy';
       default:
-        return status;
+        return status ?? "N/A";
     }
   }
 
-  static Color getStatusColor(String status) {
-    switch (status) {
-      case OrderStatus.pending:
+  static Color getStatusColor(String? status) {
+    switch (status?.toLowerCase()) {
+      case 'pending': 
         return Colors.orange.shade600;
-      case OrderStatus.confirmed:
+      case 'confirmed': 
         return Colors.blue.shade600;
-      case OrderStatus.completed:
+      case 'completed': 
         return Colors.green.shade600;
-      case OrderStatus.cancelled:
+      case 'cancelled': 
         return Colors.red.shade600;
       default:
         return Colors.grey.shade600;
     }
   }
 
-  static IconData getStatusIcon(String status) {
-    switch (status) {
-      case OrderStatus.pending:
+  static IconData getStatusIcon(String? status) {
+    switch (status?.toLowerCase()) {
+      case 'pending': 
         return Icons.pending_actions_rounded;
-      case OrderStatus.confirmed:
+      case 'confirmed': 
         return Icons.hourglass_top_rounded;
-      case OrderStatus.completed:
+      case 'completed': 
         return Icons.check_circle_outline_rounded;
-      case OrderStatus.cancelled:
+      case 'cancelled': 
         return Icons.cancel_outlined;
       default:
         return Icons.list_alt_rounded;
