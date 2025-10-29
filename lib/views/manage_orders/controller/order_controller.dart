@@ -1,5 +1,3 @@
-// File: lib/views/manage_order/controller/order_controller.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ql_moifood_app/models/order.dart';
@@ -44,8 +42,9 @@ class OrderController {
   // Hiển thị xác nhận cập nhật trạng thái
   void confirmUpdateOrderStatus(Order order, String newStatus) {
     String newStatusDisplay = OrderStatusHelper.getStatusDisplayName(newStatus);
-    String currentStatusDisplay = OrderStatusHelper.getStatusDisplayName(order.orderStatus ?? '');
-
+    String currentStatusDisplay = OrderStatusHelper.getStatusDisplayName(
+      order.orderStatus ?? '',
+    );
     AppUtils.showConfirmDialog(
       context,
       title: 'Xác nhận cập nhật',
@@ -60,6 +59,7 @@ class OrderController {
           oldStatus: order.orderStatus ?? OrderStatus.pending,
           newStatus: newStatus,
         );
+
         if (context.mounted) {
           AppUtils.showSnackBar(
             context,
@@ -68,6 +68,9 @@ class OrderController {
                 : _viewModel.errorMessage ?? 'Cập nhật thất bại',
             type: success ? SnackBarType.success : SnackBarType.error,
           );
+          if (success) {
+            await refreshAllOrders();
+          }
         }
       }
     });

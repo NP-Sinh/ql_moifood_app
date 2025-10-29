@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ql_moifood_app/models/order.dart';
-import 'order_card.dart';
+import 'order_card/order_card.dart';
 
 class OrderListItem extends StatefulWidget {
   final Order order;
@@ -9,6 +9,7 @@ class OrderListItem extends StatefulWidget {
   final VoidCallback? onConfirm;
   final VoidCallback? onDeliver;
   final VoidCallback? onCancel;
+  final Function(String newStatus)? onStatusChange;
 
   const OrderListItem({
     super.key,
@@ -18,6 +19,7 @@ class OrderListItem extends StatefulWidget {
     this.onConfirm,
     this.onDeliver,
     this.onCancel,
+    this.onStatusChange,
   });
 
   @override
@@ -38,9 +40,7 @@ class _OrderListItemState extends State<OrderListItem> {
           order: widget.order,
           isHovered: _isHovered,
           onViewDetails: widget.onViewDetails,
-          onConfirm: widget.onConfirm,
-          onDeliver: widget.onDeliver,
-          onCancel: widget.onCancel,
+          onStatusChange: widget.onStatusChange,
         ),
       ),
     );

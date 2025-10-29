@@ -206,6 +206,9 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
                         OrderStatus.cancelled,
                       )
                     : null,
+                onStatusChange: (newStatus) {
+                  _controller.confirmUpdateOrderStatus(order, newStatus);
+                },
               );
             },
           ),
