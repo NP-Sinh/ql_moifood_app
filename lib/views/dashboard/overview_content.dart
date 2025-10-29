@@ -92,25 +92,19 @@ class OverviewContent extends StatelessWidget {
                   gradient: LinearGradient(
                     colors: [
                       Colors.white,
-                      (stat['color'] as Color).withValues(
-                        alpha: 0.05,
-                      ), // ĐÃ SỬA
+                      (stat['color'] as Color).withValues(alpha: 0.05),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: (stat['color'] as Color).withValues(
-                      alpha: 0.2,
-                    ), // ĐÃ SỬA
+                    color: (stat['color'] as Color).withValues(alpha: 0.2),
                     width: 1.5,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: (stat['color'] as Color).withValues(
-                        alpha: 0.1,
-                      ), // ĐÃ SỬA
+                      color: (stat['color'] as Color).withValues(alpha: 0.1),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                     ),
@@ -121,9 +115,7 @@ class OverviewContent extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: (stat['color'] as Color).withValues(
-                          alpha: 0.15,
-                        ), // ĐÃ SỬA
+                        color: (stat['color'] as Color).withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
@@ -167,7 +159,7 @@ class OverviewContent extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: const Color(
                                     0xFF4CAF50,
-                                  ).withValues(alpha: 0.15), // ĐÃ SỬA
+                                  ).withValues(alpha: 0.15),
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: Text(
@@ -215,7 +207,7 @@ class OverviewContent extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05), // ĐÃ SỬA
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 4),
           ),
@@ -310,7 +302,7 @@ class OverviewContent extends StatelessWidget {
                         gradient: LinearGradient(
                           colors: [
                             AppColor.orange,
-                            AppColor.orange.withValues(alpha: 0.6), // ĐÃ SỬA
+                            AppColor.orange.withValues(alpha: 0.6),
                           ],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
@@ -347,7 +339,7 @@ class OverviewContent extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05), // ĐÃ SỬA
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 4),
           ),
@@ -390,7 +382,7 @@ class OverviewContent extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15), // ĐÃ SỬA
+              color: color.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
@@ -474,7 +466,7 @@ class OverviewContent extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05), // ĐÃ SỬA
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 4),
           ),
@@ -529,7 +521,7 @@ class OverviewContent extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColor.orange.withValues(alpha: 0.1), // ĐÃ SỬA
+              color: AppColor.orange.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
@@ -559,7 +551,7 @@ class OverviewContent extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: statusColor.withValues(alpha: 0.15), // ĐÃ SỬA
+                        color: statusColor.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
@@ -644,7 +636,7 @@ class OverviewContent extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05), // ĐÃ SỬA
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 4),
           ),
@@ -668,8 +660,8 @@ class OverviewContent extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppColor.orange.withValues(alpha: 0.2), // ĐÃ SỬA
-                      AppColor.orange.withValues(alpha: 0.1), // ĐÃ SỬA
+                      AppColor.orange.withValues(alpha: 0.2),
+                      AppColor.orange.withValues(alpha: 0.1),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(8),
@@ -740,7 +732,7 @@ class OverviewContent extends StatelessWidget {
                             BoxShadow(
                               color: const Color(
                                 0xFFFFD700,
-                              ).withValues(alpha: 0.3), // ĐÃ SỬA
+                              ).withValues(alpha: 0.3),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
@@ -765,7 +757,7 @@ class OverviewContent extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppColor.orange.withValues(alpha: 0.1), // ĐÃ SỬA
+                        color: AppColor.orange.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
@@ -832,7 +824,7 @@ class OverviewContent extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: const Color(
                               0xFF4CAF50,
-                            ).withValues(alpha: 0.15), // ĐÃ SỬA
+                            ).withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Row(
@@ -861,7 +853,7 @@ class OverviewContent extends StatelessWidget {
                 ),
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );
