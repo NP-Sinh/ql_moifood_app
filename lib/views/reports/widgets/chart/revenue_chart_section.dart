@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,9 +15,23 @@ class RevenueChartSection extends StatelessWidget {
     required this.currencyFormatter,
   });
 
+  String _formatPeriod(String period) {
+    try {
+      final dateTime = DateTime.parse(period);
+      return DateFormat('dd-MM-yyyy').format(dateTime);
+    } catch (e) {
+      return period;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<StatisticViewModel>();
+
+    final double grandTotal =
+        viewModel.isLoadingRevenue || viewModel.revenueData == null
+        ? 0.0
+        : (viewModel.revenueData['grandTotal'] as num).toDouble();
 
     return AnimatedBuilder(
       animation: animation,
@@ -51,6 +66,7 @@ class RevenueChartSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            //  PHẦN HEADER
             Row(
               children: [
                 Container(
@@ -87,8 +103,35 @@ class RevenueChartSection extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 20),
+            // --- TỔNG DOANH THU
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  grandTotal == 0.0 && viewModel.isLoadingRevenue
+                      ? '... đ'
+                      : currencyFormatter.format(grandTotal),
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green.shade700,
+                    letterSpacing: -1,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Tổng doanh thu',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 24),
-            // Gọi hàm build biểu đồ bên dưới
+            // --- BIỂU ĐỒ
             _buildRevenueBarChart(context, viewModel),
           ],
         ),
@@ -100,15 +143,16 @@ class RevenueChartSection extends StatelessWidget {
     BuildContext context,
     StatisticViewModel viewModel,
   ) {
-    if (viewModel.isLoadingRevenue) {
+    if (viewModel.isLoadingRevenue && viewModel.revenueData == null) {
       return const SizedBox(
-        height: 320,
+        height: 240,
         child: Center(child: CircularProgressIndicator()),
       );
     }
+
     if (viewModel.errorMessage != null && viewModel.revenueData == null) {
       return SizedBox(
-        height: 320,
+        height: 240,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -133,7 +177,7 @@ class RevenueChartSection extends StatelessWidget {
         viewModel.revenueData['data'] == null ||
         viewModel.revenueData['data'].isEmpty) {
       return SizedBox(
-        height: 320,
+        height: 240,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -155,13 +199,13 @@ class RevenueChartSection extends StatelessWidget {
     }
 
     final List<dynamic> data = viewModel.revenueData['data'];
-    final double grandTotal = (viewModel.revenueData['grandTotal'] as num)
-        .toDouble();
     final List<BarChartGroupData> barGroups = [];
+    double maxY = 0;
 
     for (int i = 0; i < data.length; i++) {
       final item = data[i];
       final double yValue = (item['totalRevenue'] as num).toDouble();
+      maxY = max(maxY, yValue);
       barGroups.add(
         BarChartGroupData(
           x: i,
@@ -183,173 +227,117 @@ class RevenueChartSection extends StatelessWidget {
       );
     }
 
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.green.shade400.withValues(alpha: 0.15),
-                Colors.green.shade300.withValues(alpha: 0.1),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.green.shade200, width: 1),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.green.withValues(alpha: 0.2),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  Icons.account_balance_wallet_rounded,
-                  color: Colors.green.shade600,
-                  size: 28,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Tổng doanh thu',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey.shade700,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    currencyFormatter.format(grandTotal),
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: Colors.green.shade700,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 24),
-        SizedBox(
-          height: 240,
-          child: BarChart(
-            BarChartData(
-              alignment: BarChartAlignment.spaceAround,
-              barGroups: barGroups,
-              titlesData: FlTitlesData(
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: (value, meta) {
-                      int index = value.toInt();
-                      if (index >= 0 && index < data.length) {
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: Text(
-                            data[index]['period'].toString(),
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.grey.shade700,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        );
-                      }
-                      return const Text('');
-                    },
-                    reservedSize: 36,
-                  ),
-                ),
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 60,
-                    getTitlesWidget: (value, meta) {
-                      return Text(
-                        NumberFormat.compact(locale: 'vi_VN').format(value),
+    final double leftInterval = (maxY == 0) ? 1 : (maxY / 5).ceilToDouble();
+
+    final double bottomInterval = (data.length <= 6)
+        ? 1
+        : (data.length / 5).ceilToDouble();
+
+    // Chỉ trả về biểu đồ
+    return SizedBox(
+      height: 240,
+      child: BarChart(
+        BarChartData(
+          alignment: BarChartAlignment.spaceAround,
+          barGroups: barGroups,
+          titlesData: FlTitlesData(
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                interval: bottomInterval,
+                getTitlesWidget: (value, meta) {
+                  int index = value.toInt();
+                  if (index >= 0 && index < data.length) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: Text(
+                        _formatPeriod(data[index]['period'].toString()),
                         style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.grey.shade600,
-                          fontWeight: FontWeight.w500,
+                          fontSize: 11,
+                          color: Colors.grey.shade700,
+                          fontWeight: FontWeight.w600,
                         ),
-                      );
-                    },
-                  ),
-                ),
-                topTitles: const AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                rightTitles: const AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
+                      ),
+                    );
+                  }
+                  return const Text('');
+                },
+                reservedSize: 36,
               ),
-              borderData: FlBorderData(show: false),
-              gridData: FlGridData(
-                show: true,
-                drawVerticalLine: false,
-                horizontalInterval: null,
-                getDrawingHorizontalLine: (value) {
-                  return FlLine(
-                    color: Colors.grey.shade200,
-                    strokeWidth: 1,
-                    dashArray: [5, 5],
+            ),
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 60,
+                interval: leftInterval,
+                getTitlesWidget: (value, meta) {
+                  if (value == 0) return const Text('');
+                  return Text(
+                    NumberFormat.compact(locale: 'vi_VN').format(value),
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.grey.shade600,
+                      fontWeight: FontWeight.w500,
+                    ),
                   );
                 },
               ),
-              barTouchData: BarTouchData(
-                touchTooltipData: BarTouchTooltipData(
-                  tooltipBorder: const BorderSide(style: BorderStyle.solid),
-                  tooltipPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  tooltipMargin: 8,
-                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                    final item = data[groupIndex];
-                    final period = item['period'];
-                    final revenue = (item['totalRevenue'] as num).toDouble();
-                    return BarTooltipItem(
-                      '$period\n',
-                      const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13,
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: currencyFormatter.format(revenue),
-                          style: const TextStyle(
-                            color: Colors.greenAccent,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+          ),
+          borderData: FlBorderData(show: false),
+          gridData: FlGridData(
+            show: true,
+            drawVerticalLine: false,
+            horizontalInterval: null,
+            getDrawingHorizontalLine: (value) {
+              return FlLine(
+                color: Colors.grey.shade200,
+                strokeWidth: 1,
+                dashArray: [5, 5],
+              );
+            },
+          ),
+          barTouchData: BarTouchData(
+            touchTooltipData: BarTouchTooltipData(
+              tooltipBorder: const BorderSide(style: BorderStyle.solid),
+              tooltipPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
               ),
+              tooltipMargin: 8,
+              getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                final item = data[groupIndex];
+                final period = item['period'];
+                final revenue = (item['totalRevenue'] as num).toDouble();
+                return BarTooltipItem(
+                  '${_formatPeriod(period.toString())}\n',
+                  const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: currencyFormatter.format(revenue),
+                      style: const TextStyle(
+                        color: Colors.greenAccent,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }

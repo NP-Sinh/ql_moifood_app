@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ql_moifood_app/viewmodels/statistic_viewmodel.dart';
 
@@ -8,9 +9,26 @@ class OrderCountChartSection extends StatelessWidget {
 
   const OrderCountChartSection({super.key, required this.animation});
 
+  /// Hàm helper để format ngày tháng
+  String _formatPeriod(String period) {
+    try {
+      final dateTime = DateTime.parse(period);
+      return DateFormat('dd-MM-yyyy').format(dateTime);
+    } catch (e) {
+      return period;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<StatisticViewModel>();
+
+    final String grandTotalText =
+        viewModel.isLoadingOrderCount || viewModel.orderCountData == null
+        ? '--'
+        : (viewModel.orderCountData['totalOrders'] ?? 0 as num)
+              .toInt()
+              .toString();
 
     return AnimatedBuilder(
       animation: animation,
@@ -45,6 +63,7 @@ class OrderCountChartSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Header
             Row(
               children: [
                 Container(
@@ -81,8 +100,33 @@ class OrderCountChartSection extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 20),
+            // Tổng số đơn
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$grandTotalText đơn',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade700,
+                    letterSpacing: -1,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Tổng số đơn hàng',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 24),
-            // Gọi hàm build biểu đồ bên dưới
+            // Biểu đồ
             _buildOrderCountLineChart(context, viewModel),
           ],
         ),
@@ -94,15 +138,15 @@ class OrderCountChartSection extends StatelessWidget {
     BuildContext context,
     StatisticViewModel viewModel,
   ) {
-    if (viewModel.isLoadingOrderCount) {
+    if (viewModel.isLoadingOrderCount && viewModel.orderCountData == null) {
       return const SizedBox(
-        height: 320,
+        height: 240,
         child: Center(child: CircularProgressIndicator()),
       );
     }
     if (viewModel.errorMessage != null && viewModel.orderCountData == null) {
       return SizedBox(
-        height: 320,
+        height: 240,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -127,7 +171,7 @@ class OrderCountChartSection extends StatelessWidget {
         viewModel.orderCountData['data'] == null ||
         viewModel.orderCountData['data'].isEmpty) {
       return SizedBox(
-        height: 320,
+        height: 240,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -149,231 +193,176 @@ class OrderCountChartSection extends StatelessWidget {
     }
 
     final List<dynamic> data = viewModel.orderCountData['data'];
-    final int grandTotal = (viewModel.orderCountData['totalOrders'] ?? 0 as num)
-        .toInt();
     final List<FlSpot> spots = [];
+    double maxY = 0; 
 
     for (int i = 0; i < data.length; i++) {
       final item = data[i];
       final double yValue = (item['orderCount'] as num).toDouble();
+      if (yValue > maxY) {
+        maxY = yValue;
+      }
       spots.add(FlSpot(i.toDouble(), yValue));
     }
+    final double leftInterval = (maxY <= 5) ? 1 : (maxY / 5).ceilToDouble();
+    final double bottomInterval = (data.length <= 6)
+        ? 1
+        : (data.length / 5).ceilToDouble();
 
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.blue.shade400.withValues(alpha: 0.15),
-                Colors.blue.shade300.withValues(alpha: 0.1),
-              ],
+    return SizedBox(
+      height: 240,
+      child: LineChart(
+        LineChartData(
+          gridData: FlGridData(
+            show: true,
+            drawVerticalLine: false,
+            horizontalInterval: null,
+            getDrawingHorizontalLine: (value) {
+              return FlLine(
+                color: Colors.grey.shade200,
+                strokeWidth: 1,
+                dashArray: [5, 5],
+              );
+            },
+          ),
+          titlesData: FlTitlesData(
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                interval: bottomInterval,
+                getTitlesWidget: (value, meta) {
+                  int index = value.toInt();
+                  if (index >= 0 && index < data.length) {
+                    final period =
+                        data[index]['period'] ??
+                        data[index]['periodicTimer'] ??
+                        '';
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: Text(
+                        _formatPeriod(period.toString()),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey.shade700,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    );
+                  }
+                  return const Text('');
+                },
+                reservedSize: 36,
+              ),
             ),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.blue.shade200, width: 1),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blue.withValues(alpha: 0.2),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  Icons.shopping_cart_rounded,
-                  color: Colors.blue.shade600,
-                  size: 28,
-                ),
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 45,
+                interval: leftInterval,
+                getTitlesWidget: (value, meta) {
+                  if (value == value.toInt()) {
+                    return Text(
+                      value.toInt().toString(),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey.shade600,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    );
+                  }
+                  return const Text('');
+                },
               ),
-              const SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Tổng số đơn hàng',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey.shade700,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '$grandTotal đơn',
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: Colors.blue.shade700,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
           ),
-        ),
-        const SizedBox(height: 24),
-        SizedBox(
-          height: 240,
-          child: LineChart(
-            LineChartData(
-              gridData: FlGridData(
+          borderData: FlBorderData(show: false),
+          lineBarsData: [
+            LineChartBarData(
+              spots: spots,
+              isCurved: true,
+              curveSmoothness: 0.4,
+              gradient: LinearGradient(
+                colors: [Colors.blue.shade400, Colors.blue.shade600],
+              ),
+              barWidth: 4,
+              isStrokeCapRound: true,
+              dotData: FlDotData(
                 show: true,
-                drawVerticalLine: false,
-                horizontalInterval: null,
-                getDrawingHorizontalLine: (value) {
-                  return FlLine(
-                    color: Colors.grey.shade200,
-                    strokeWidth: 1,
-                    dashArray: [5, 5],
+                getDotPainter: (spot, percent, barData, index) {
+                  return FlDotCirclePainter(
+                    radius: 5,
+                    color: Colors.white,
+                    strokeWidth: 3,
+                    strokeColor: Colors.blue.shade600,
                   );
                 },
               ),
-              titlesData: FlTitlesData(
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: (value, meta) {
-                      int index = value.toInt();
-                      if (index >= 0 && index < data.length) {
-                        final period =
-                            data[index]['period'] ??
-                            data[index]['periodicTimer'] ??
-                            '';
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: Text(
-                            period.toString(),
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.grey.shade700,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        );
-                      }
-                      return const Text('');
-                    },
-                    reservedSize: 36,
-                  ),
-                ),
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 45,
-                    getTitlesWidget: (value, meta) {
-                      return Text(
-                        value.toInt().toString(),
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.grey.shade600,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                topTitles: const AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                rightTitles: const AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
+              belowBarData: BarAreaData(
+                show: true,
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.blue.shade300.withValues(alpha: 0.4),
+                    Colors.blue.shade100.withValues(alpha: 0.1),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
               ),
-              borderData: FlBorderData(show: false),
-              lineBarsData: [
-                LineChartBarData(
-                  spots: spots,
-                  isCurved: true,
-                  curveSmoothness: 0.4,
-                  gradient: LinearGradient(
-                    colors: [Colors.blue.shade400, Colors.blue.shade600],
-                  ),
-                  barWidth: 4,
-                  isStrokeCapRound: true,
-                  dotData: FlDotData(
-                    show: true,
-                    getDotPainter: (spot, percent, barData, index) {
-                      return FlDotCirclePainter(
-                        radius: 5,
+              shadow: Shadow(
+                color: Colors.blue.withValues(alpha: 0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ),
+          ],
+          lineTouchData: LineTouchData(
+            touchTooltipData: LineTouchTooltipData(
+              tooltipBorder: const BorderSide(style: BorderStyle.solid),
+              tooltipPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+              tooltipMargin: 8,
+              getTooltipItems: (List<LineBarSpot> touchedSpots) {
+                return touchedSpots.map((spot) {
+                  final index = spot.x.toInt();
+                  if (index >= 0 && index < data.length) {
+                    final item = data[index];
+                    final period =
+                        item['period'] ?? item['periodicTimer'] ?? '';
+                    final count = (item['orderCount'] as num).toInt();
+                    return LineTooltipItem(
+                      '${_formatPeriod(period.toString())}\n',
+                      const TextStyle(
                         color: Colors.white,
-                        strokeWidth: 3,
-                        strokeColor: Colors.blue.shade600,
-                      );
-                    },
-                  ),
-                  belowBarData: BarAreaData(
-                    show: true,
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.blue.shade300.withValues(alpha: 0.4),
-                        Colors.blue.shade100.withValues(alpha: 0.1),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                  ),
-                  shadow: Shadow(
-                    color: Colors.blue.withValues(alpha: 0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ),
-              ],
-              lineTouchData: LineTouchData(
-                touchTooltipData: LineTouchTooltipData(
-                  tooltipBorder: const BorderSide(style: BorderStyle.solid),
-                  tooltipPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  tooltipMargin: 8,
-                  getTooltipItems: (List<LineBarSpot> touchedSpots) {
-                    return touchedSpots.map((spot) {
-                      final index = spot.x.toInt();
-                      if (index >= 0 && index < data.length) {
-                        final item = data[index];
-                        final period =
-                            item['period'] ?? item['periodicTimer'] ?? '';
-                        final count = (item['orderCount'] as num).toInt();
-                        return LineTooltipItem(
-                          '$period\n',
-                          const TextStyle(
-                            color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: '$count đơn',
+                          style: const TextStyle(
+                            color: Colors.lightBlueAccent,
+                            fontSize: 15,
                             fontWeight: FontWeight.bold,
-                            fontSize: 13,
                           ),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: '$count đơn',
-                              style: const TextStyle(
-                                color: Colors.lightBlueAccent,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                      return null;
-                    }).toList();
-                  },
-                ),
-              ),
+                        ),
+                      ],
+                    );
+                  }
+                  return null;
+                }).toList();
+              },
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }
