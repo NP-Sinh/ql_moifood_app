@@ -21,6 +21,7 @@ class ApiUrls {
   static final Uri setActiveStatus = Uri.parse('${baseUrl}food/set-active-status');
   static final Uri setAvailableStatus = Uri.parse('${baseUrl}food/set-available-status');
   static final Uri deleteFood = Uri.parse('${baseUrl}food/delete');
+  static final Uri searchFood = Uri.parse('${baseUrl}food/search');
 
   // order
   static final Uri getAllOrder = Uri.parse('${baseUrl}order/get-all-order');

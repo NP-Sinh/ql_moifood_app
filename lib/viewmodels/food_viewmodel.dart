@@ -5,6 +5,7 @@ import '../api/api_food.dart';
 import '../models/food.dart';
 
 class FoodViewModel extends ChangeNotifier {
+
   List<Food> _availableFoods = [];
   List<Food> get availableFoods => _availableFoods;
 
@@ -22,7 +23,7 @@ class FoodViewModel extends ChangeNotifier {
 
   final FoodApi _api = FoodApi();
 
-  // Lấy token (tương tự CategoryViewModel)
+  // Lấy token
   Future<String?> _getToken() async {
     final token = await AuthStorage.getToken();
     if (token == null || token.isEmpty) {
@@ -58,6 +59,48 @@ class FoodViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  /// Tìm kiếm food theo từ khóa
+  Future<void> searchFoods(String keyword) async {
+    // Nếu keyword rỗng, tải lại toàn bộ danh sách
+    if (keyword.trim().isEmpty) {
+      await fetchFoods();
+      return;
+    }
+
+     _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    final token = await _getToken();
+    if (token == null) {
+      _errorMessage = "Lỗi xác thực, vui lòng đăng nhập lại.";
+      _isLoading = false;
+      return;
+    }
+
+    try {
+    final foods = await _api.searchFood(keyword: keyword, token: token);
+
+    _availableFoods = foods
+        .where((food) => food.isAvailable)
+        .toList();
+    
+    _unavailableFoods = foods
+        .where((food) => !food.isAvailable)
+        .toList();
+    
+    _deletedFoods = foods
+        .where((food) => food.isActive)
+        .toList();
+    
+  } catch (e) {
+    _errorMessage = "Lỗi tìm kiếm: ${e.toString()}";
+  } finally {
+    _isLoading = false;
+    notifyListeners();
+  }
   }
 
   // Hàm set trạng thái Bán / Ngừng bán

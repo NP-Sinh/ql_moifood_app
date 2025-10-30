@@ -1,23 +1,30 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:ql_moifood_app/models/food.dart';
-import 'package:ql_moifood_app/models/category.dart'; 
+import 'package:ql_moifood_app/models/category.dart';
 import 'package:ql_moifood_app/resources/theme/colors.dart';
 import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
 import 'package:ql_moifood_app/resources/widgets/dialogs/app_utils.dart';
 import 'package:ql_moifood_app/resources/widgets/dialogs/configs/snackbar_config.dart';
-import 'package:ql_moifood_app/viewmodels/food_viewmodel.dart'; 
-import 'package:ql_moifood_app/viewmodels/category_viewmodel.dart'; 
+import 'package:ql_moifood_app/viewmodels/food_viewmodel.dart';
+import 'package:ql_moifood_app/viewmodels/category_viewmodel.dart';
 
 import 'package:ql_moifood_app/views/manage_food/modals/food_form.dart';
 
 class FoodController {
   final BuildContext context;
   late final FoodViewModel _viewModel;
+  Timer? _debounce;
 
   FoodController(this.context) {
     _viewModel = context.read<FoodViewModel>();
+  }
+
+  void dispose() {
+    _debounce?.cancel();
   }
 
   // tải món ăn
@@ -31,11 +38,29 @@ class FoodController {
       );
     }
   }
+
+  // Xử lý search với debounce
+  void onSearchChanged(String query) {
+    searchFoods(query);
+  }
+
+  // Tìm kiếm food
+  Future<void> searchFoods(String keyword) async {
+    await _viewModel.searchFoods(keyword);
+    if (_viewModel.errorMessage != null && context.mounted) {
+      AppUtils.showSnackBar(
+        context,
+        _viewModel.errorMessage!,
+        type: SnackBarType.error,
+      );
+    }
+  }
+
   // Hàm xử lý Bán / Ngừng bán
   void confirmSetAvailableStatus(Food food, bool isAvailable) {
     final actionText = isAvailable ? 'Mở bán' : 'Ngừng bán';
     final actionColor = isAvailable ? Colors.green : Colors.amber.shade700;
-    
+
     AppUtils.showConfirmDialog(
       context,
       title: 'Xác nhận $actionText',
@@ -62,27 +87,41 @@ class FoodController {
   }
 
   // Hiển thị modal Thêm / Sửa
-  void _showModifyFoodModal({Food? food, required List<Category> allCategories}) {
+  void _showModifyFoodModal({
+    Food? food,
+    required List<Category> allCategories,
+  }) {
     final formKey = GlobalKey<FormState>();
     final nameController = TextEditingController(text: food?.name);
-    final descriptionController = TextEditingController(text: food?.description);
-    final priceController = TextEditingController(text: food?.price.toStringAsFixed(0));
+    final descriptionController = TextEditingController(
+      text: food?.description,
+    );
+    final priceController = TextEditingController(
+      text: food?.price.toStringAsFixed(0),
+    );
 
     XFile? pickedImage;
     Category? selectedCategory;
     if (food != null) {
       try {
-        selectedCategory = allCategories.firstWhere((c) => c.categoryId == food.categoryId);
+        selectedCategory = allCategories.firstWhere(
+          (c) => c.categoryId == food.categoryId,
+        );
       } catch (e) {
-        selectedCategory = allCategories.isNotEmpty ? allCategories.first : null;
+        selectedCategory = allCategories.isNotEmpty
+            ? allCategories.first
+            : null;
       }
     } else {
       selectedCategory = allCategories.isNotEmpty ? allCategories.first : null;
     }
 
     if (allCategories.isEmpty) {
-      AppUtils.showSnackBar(context, 'Cần tạo danh mục trước khi thêm món ăn!',
-          type: SnackBarType.error);
+      AppUtils.showSnackBar(
+        context,
+        'Cần tạo danh mục trước khi thêm món ăn!',
+        type: SnackBarType.error,
+      );
       return;
     }
     AppUtils.showBaseModal(
@@ -129,8 +168,8 @@ class FoodController {
                   context,
                   success
                       ? (food == null
-                          ? 'Thêm thành công'
-                          : 'Cập nhật thành công')
+                            ? 'Thêm thành công'
+                            : 'Cập nhật thành công')
                       : vm.errorMessage ?? 'Thao tác thất bại',
                   type: success ? SnackBarType.success : SnackBarType.error,
                 );
@@ -146,12 +185,13 @@ class FoodController {
     final categories = context.read<CategoryViewModel>().category;
     _showModifyFoodModal(food: null, allCategories: categories);
   }
+
   void showEditFoodModal(Food food) {
     final categories = context.read<CategoryViewModel>().category;
     _showModifyFoodModal(food: food, allCategories: categories);
   }
 
-  // Xác nhận xóa 
+  // Xác nhận xóa
   void confirmDeleteFood(Food food) {
     AppUtils.showConfirmDialog(
       context,

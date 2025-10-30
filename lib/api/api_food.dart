@@ -50,6 +50,31 @@ class FoodApi {
     }
   }
 
+   // Search user
+  Future<List<Food>> searchFood({
+    required String keyword,
+    required String token,
+  }) async {
+    try {
+      final uri = ApiUrls.searchFood.replace(
+        queryParameters: {'keyword': keyword},
+      );
+
+      final response = await http.get(uri, headers: _getHeaders(token: token));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((json) => Food.fromJson(json)).toList();
+      } else {
+        _logger.w('Tìm kiếm food thất bại: ${response.statusCode}');
+        return [];
+      }
+    } catch (e, st) {
+      _logger.e('Lỗi tìm kiếm food', error: e, stackTrace: st);
+      return [];
+    }
+  }
+
   // POST: Thêm mới / Cập nhật món ăn
   Future<bool> modifyFood({
     required int id,

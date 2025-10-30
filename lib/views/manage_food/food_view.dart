@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ql_moifood_app/resources/widgets/TextFormField/custom_text_field.dart';
 import 'package:ql_moifood_app/viewmodels/food_viewmodel.dart';
 import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
 import 'package:ql_moifood_app/resources/theme/colors.dart';
@@ -19,6 +20,7 @@ class FoodView extends StatefulWidget {
 class _FoodViewState extends State<FoodView> with TickerProviderStateMixin {
   late final FoodController _controller;
   late final TabController _tabController;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -34,7 +36,9 @@ class _FoodViewState extends State<FoodView> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    _controller.dispose();
     _tabController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -90,6 +94,19 @@ class _FoodViewState extends State<FoodView> with TickerProviderStateMixin {
         const Text(
           'Quản lý Món ăn',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(
+          width: 750,
+          child: CustomTextField(
+            controller: _searchController,
+            isSearch: true,
+            hintText: 'Tìm theo tên, email, SĐT...',
+            prefixIcon: Icons.search_rounded,
+            onChanged: _controller.onSearchChanged,
+            onClear: () {
+              _controller.onSearchChanged('');
+            },
+          ),
         ),
         Consumer<FoodViewModel>(
           builder: (context, vm, _) => CustomButton(
