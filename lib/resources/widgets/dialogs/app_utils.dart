@@ -142,6 +142,10 @@ class AppUtils {
     required Widget child,
     Widget? primaryAction,
     Widget? secondaryAction,
+    double? width,
+    double? height,
+    double? maxWidth,
+    double? maxHeight,
   }) => showGeneralDialog<T>(
     context: context,
     barrierDismissible: true,
@@ -151,6 +155,10 @@ class AppUtils {
       primaryAction: primaryAction,
       secondaryAction: secondaryAction,
       child: child,
+      width: width,
+      height: height,
+      maxWidth: maxWidth,
+      maxHeight: maxHeight,
     ),
     transitionBuilder: (context, anim1, anim2, child) => FadeTransition(
       opacity: anim1,

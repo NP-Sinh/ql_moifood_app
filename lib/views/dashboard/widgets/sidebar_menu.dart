@@ -29,7 +29,7 @@ class SidebarMenu extends StatelessWidget {
           colors: [
             AppColor.orange.withValues(alpha: 0.9),
             AppColor.orange.withValues(alpha: 0.9),
-          ], // ĐÃ SỬA
+          ], 
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),

@@ -7,6 +7,7 @@ import 'package:ql_moifood_app/views/dashboard/overview_content.dart';
 import 'package:ql_moifood_app/views/manage_food/food_view.dart';
 import 'package:ql_moifood_app/views/manage_orders/order_view.dart';
 import 'package:ql_moifood_app/views/reports/statistic_view.dart';
+import 'package:ql_moifood_app/views/review/review_view.dart';
 import 'package:ql_moifood_app/views/settings/setting_view.dart';
 
 class DashboardView extends StatefulWidget {
@@ -27,6 +28,7 @@ class _DashboardViewState extends State<DashboardView> {
     {'icon': Icons.restaurant_menu_rounded, 'label': 'Món ăn'},
     {'icon': Icons.people_rounded, 'label': 'Khách hàng'},
     {'icon': Icons.analytics_rounded, 'label': 'Thống kê'},
+    {'icon': Icons.rate_review, 'label': 'Đánh giá'},
     {'icon': Icons.settings_rounded, 'label': 'Cài đặt'},
   ];
 
@@ -45,6 +47,8 @@ class _DashboardViewState extends State<DashboardView> {
       case 5:
         return const StatisticView();
       case 6:
+        return const ReviewView();
+      case 7:
         return const SettingsView();
       default:
         return OverviewContent(isDesktop: isDesktop, isTablet: isTablet);
