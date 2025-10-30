@@ -4,6 +4,7 @@ import 'package:ql_moifood_app/resources/widgets/TextFormField/custom_text_field
 import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
 import 'package:ql_moifood_app/resources/widgets/dialogs/app_utils.dart';
 import 'package:ql_moifood_app/views/auth/login_view.dart';
+import 'package:ql_moifood_app/views/chat/chat_bot_modal.dart';
 import 'package:ql_moifood_app/views/customer/controller/user_controller.dart';
 
 class TopBar extends StatefulWidget {
@@ -52,6 +53,14 @@ class _TopBarState extends State<TopBar> {
         );
       }
     }
+  }
+
+  // chat bot
+  void _handleChatBotTap(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) => const ChatBotModal(),
+    );
   }
 
   // Xử lý khi bấm Thông báo
@@ -119,7 +128,7 @@ class _TopBarState extends State<TopBar> {
 
           // Chat Bot Icon
           CustomButton(
-            onTap: () => _handleNotificationTap(context),
+            onTap: () => _handleChatBotTap(context),
             tooltip: 'Chat Bot AI',
             icon: Image.asset(
               'assets/icons/generative.png',
