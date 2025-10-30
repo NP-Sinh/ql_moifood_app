@@ -38,7 +38,7 @@ class _UserViewState extends State<UserView> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void _onSearchChanged(String query) {
+  void onSearchChanged(String query) {
     _controller.searchUsers(query);
   }
 
@@ -65,16 +65,16 @@ class _UserViewState extends State<UserView> with TickerProviderStateMixin {
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                  child: _buildHeader(),
+                  child: buildHeader(),
                 ),
-                _buildTabBar(),
+                buildTabBar(),
               ],
             ),
           ),
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [_buildActiveUsersList(), _buildInactiveUsersList()],
+              children: [buildTab1(), buildTab2()],
             ),
           ),
         ],
@@ -83,7 +83,7 @@ class _UserViewState extends State<UserView> with TickerProviderStateMixin {
   }
 
   // Header
-  Widget _buildHeader() {
+  Widget buildHeader() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -99,9 +99,9 @@ class _UserViewState extends State<UserView> with TickerProviderStateMixin {
             isSearch: true,
             hintText: 'Tìm theo tên, email, SĐT...',
             prefixIcon: Icons.search_rounded,
-            onChanged: _onSearchChanged,
+            onChanged: onSearchChanged,
             onClear: () {
-              _onSearchChanged('');
+              onSearchChanged('');
             },
           ),
         ),
@@ -110,7 +110,7 @@ class _UserViewState extends State<UserView> with TickerProviderStateMixin {
   }
 
   // build tab
-  Widget _buildTabBar() {
+  Widget buildTabBar() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
       child: Container(
@@ -158,8 +158,8 @@ class _UserViewState extends State<UserView> with TickerProviderStateMixin {
     );
   }
 
-  // Tab 1: Đang hoạt động
-  Widget _buildActiveUsersList() {
+  // Tab 1:
+  Widget buildTab1() {
     return Consumer<UserViewModel>(
       builder: (context, vm, _) {
         if (vm.isLoading && vm.activeUsers.isEmpty) {
@@ -200,8 +200,8 @@ class _UserViewState extends State<UserView> with TickerProviderStateMixin {
     );
   }
 
-  // Tab 2: Bị vô hiệu hóa
-  Widget _buildInactiveUsersList() {
+  // Tab 2:
+  Widget buildTab2() {
     return Consumer<UserViewModel>(
       builder: (context, vm, _) {
         if (vm.isLoading && vm.inactiveUsers.isEmpty) {
