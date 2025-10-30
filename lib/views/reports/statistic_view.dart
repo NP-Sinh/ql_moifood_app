@@ -86,7 +86,7 @@ class _StatisticViewState extends State<StatisticView>
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -241,7 +241,7 @@ class _StatisticViewState extends State<StatisticView>
             borderRadius: BorderRadius.circular(18),
             boxShadow: [
               BoxShadow(
-                color: AppColor.primary.withOpacity(0.3),
+                color: AppColor.primary.withValues(alpha: 0.3),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),

@@ -120,7 +120,7 @@ class ChartFoodState extends State<ChartFood> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
+                      color: Colors.black.withValues(alpha: 0.08),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),
@@ -209,14 +209,14 @@ class ChartFoodState extends State<ChartFood> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.15),
+                color: Colors.black.withValues(alpha: 0.15),
                 blurRadius: 24,
                 offset: const Offset(0, 8),
                 spreadRadius: 0,
               ),
               BoxShadow(
                 color: widget.colors[_touchedIndex % widget.colors.length]
-                    .withOpacity(0.1),
+                    .withValues(alpha: 0.1),
                 blurRadius: 40,
                 offset: const Offset(0, 4),
                 spreadRadius: -4,
@@ -239,7 +239,7 @@ class ChartFoodState extends State<ChartFood> {
                         colors: [
                           widget.colors[_touchedIndex % widget.colors.length],
                           widget.colors[_touchedIndex % widget.colors.length]
-                              .withOpacity(0.7),
+                              .withValues(alpha: 0.7),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(8),
@@ -247,7 +247,7 @@ class ChartFoodState extends State<ChartFood> {
                         BoxShadow(
                           color: widget
                               .colors[_touchedIndex % widget.colors.length]
-                              .withOpacity(0.3),
+                              .withValues(alpha: 0.3),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -313,7 +313,7 @@ class ChartFoodState extends State<ChartFood> {
                     gradient: LinearGradient(
                       colors: [
                         Colors.green.shade50,
-                        Colors.green.shade100.withOpacity(0.3),
+                        Colors.green.shade100.withValues(alpha: 0.3),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(10),
@@ -378,9 +378,9 @@ class ChartFoodState extends State<ChartFood> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withOpacity(0.2), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -391,7 +391,7 @@ class ChartFoodState extends State<ChartFood> {
             label,
             style: TextStyle(
               fontSize: 10,
-              color: color.withOpacity(0.7),
+              color: color.withValues(alpha: 0.7),
               fontWeight: FontWeight.w500,
             ),
           ),
