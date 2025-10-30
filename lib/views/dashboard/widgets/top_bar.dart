@@ -117,6 +117,30 @@ class _TopBarState extends State<TopBar> {
 
           const SizedBox(width: 16),
 
+          // Chat Bot Icon
+          CustomButton(
+            onTap: () => _handleNotificationTap(context),
+            tooltip: 'Chat Bot AI',
+            icon: Image.asset(
+              'assets/icons/generative.png',
+              color: Colors.white,
+              width: 32,
+              height: 32,
+            ),
+            width: 48,
+            height: 48,
+            gradientColors: [
+              Colors.indigoAccent.shade200,
+              Colors.indigo.shade400,
+            ],
+            borderRadius: 12,
+            showShadow: false,
+            size: 0,
+            iconSize: 48,
+          ),
+
+          const SizedBox(width: 16),
+
           // Logout Button
           CustomButton(
             tooltip: 'Đăng xuất',
