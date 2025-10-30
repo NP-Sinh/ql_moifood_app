@@ -75,7 +75,6 @@ class UserController {
       context,
       title: 'Chi tiết Người dùng',
       child: UserForm(user: user), 
-      // Thêm nút Đóng
       secondaryAction: CustomButton(
         label: 'Đóng',
         onTap: () => Navigator.of(context).pop(),
