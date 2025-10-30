@@ -11,6 +11,7 @@ class CustomTextField extends StatefulWidget {
   final TextInputType keyboardType;
   final IconData? prefixIcon;
   final bool isPassword;
+  final bool isSearch;
   final FormFieldValidator<String>? validator;
   final List<Color>? gradientColors;
   final LabelPosition labelPosition;
@@ -18,6 +19,8 @@ class CustomTextField extends StatefulWidget {
   final Color? hintColor;
   final List<TextInputFormatter>? inputFormatters;
   final int? maxLines;
+  final ValueChanged<String>? onChanged;
+  final VoidCallback? onClear;
 
   const CustomTextField({
     super.key,
@@ -27,6 +30,7 @@ class CustomTextField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.prefixIcon,
     this.isPassword = false,
+    this.isSearch = false,
     this.validator,
     this.gradientColors = const [Colors.orangeAccent, Colors.deepOrange],
     this.labelPosition = LabelPosition.outside,
@@ -34,6 +38,8 @@ class CustomTextField extends StatefulWidget {
     this.hintColor,
     this.inputFormatters,
     this.maxLines,
+    this.onChanged,
+    this.onClear,
   });
 
   @override
@@ -42,11 +48,35 @@ class CustomTextField extends StatefulWidget {
 
 class _CustomTextFieldState extends State<CustomTextField> {
   bool _obscureText = true;
+  bool _hasText = false;
 
   @override
   void initState() {
     super.initState();
     _obscureText = widget.isPassword;
+    _hasText = widget.controller.text.isNotEmpty;
+    widget.controller.addListener(_onTextChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onTextChanged);
+    super.dispose();
+  }
+
+  void _onTextChanged() {
+    setState(() {
+      _hasText = widget.controller.text.isNotEmpty;
+    });
+  }
+
+  void _handleClear() {
+    widget.controller.clear();
+    widget.onChanged?.call('');
+    widget.onClear?.call();
+    setState(() {
+      _hasText = false;
+    });
   }
 
   @override
@@ -72,6 +102,30 @@ class _CustomTextFieldState extends State<CustomTextField> {
       );
     }
 
+    // Xác định suffixIcon dựa trên isSearch và isPassword
+    Widget? suffixIcon;
+    if (widget.isSearch && _hasText) {
+      // Nút clear cho search
+      suffixIcon = IconButton(
+        icon: const Icon(Icons.close_rounded),
+        color: defaultHintColor,
+        onPressed: _handleClear,
+      );
+    } else if (widget.isPassword) {
+      // Nút toggle password
+      suffixIcon = IconButton(
+        icon: Icon(
+          _obscureText ? Icons.visibility_off : Icons.visibility,
+          color: defaultHintColor,
+        ),
+        onPressed: () {
+          setState(() {
+            _obscureText = !_obscureText;
+          });
+        },
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -83,7 +137,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           validator: widget.validator,
           inputFormatters: widget.inputFormatters,
           maxLines: widget.isPassword ? 1 : widget.maxLines,
-
+          onChanged: widget.onChanged,
           decoration: InputDecoration(
             labelText: widget.labelPosition == LabelPosition.inside
                 ? widget.labelText
@@ -97,35 +151,42 @@ class _CustomTextFieldState extends State<CustomTextField> {
             prefixIcon: widget.prefixIcon != null
                 ? Icon(widget.prefixIcon, color: defaultHintColor)
                 : null,
-            suffixIcon: widget.isPassword
-                ? IconButton(
-                    icon: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
-                      color: defaultHintColor,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
-                  )
-                : null,
+            suffixIcon: suffixIcon,
             floatingLabelBehavior: FloatingLabelBehavior.auto,
             filled: true,
-            fillColor: isDarkMode ? const Color(0xFF303030) : AppColor.white,
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 14,
+            fillColor: widget.isSearch
+                ? (isDarkMode ? const Color(0xFF303030) : Colors.grey.shade100)
+                : (isDarkMode ? const Color(0xFF303030) : AppColor.white),
+            contentPadding: EdgeInsets.symmetric(
+              vertical: widget.isSearch ? 0 : 14,
               horizontal: 16,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: isDarkMode ? Colors.white30 : const Color(0xFFE0E0E0),
-              ),
+              borderRadius: BorderRadius.circular(widget.isSearch ? 24 : 8),
+              borderSide: widget.isSearch
+                  ? BorderSide.none
+                  : BorderSide(
+                      color: isDarkMode
+                          ? Colors.white30
+                          : const Color(0xFFE0E0E0),
+                    ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(widget.isSearch ? 24 : 8),
+              borderSide: widget.isSearch
+                  ? BorderSide.none
+                  : BorderSide(
+                      color: isDarkMode
+                          ? Colors.white30
+                          : const Color(0xFFE0E0E0),
+                    ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColor.orange, width: 1.5),
+              borderRadius: BorderRadius.circular(widget.isSearch ? 24 : 8),
+              borderSide: const BorderSide(
+                color: AppColor.orange,
+                width: 1.5,
+              ),
             ),
           ),
         ),

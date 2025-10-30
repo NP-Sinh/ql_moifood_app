@@ -1,11 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:ql_moifood_app/resources/helpers/auth_storage.dart';
+import 'package:ql_moifood_app/resources/widgets/TextFormField/custom_text_field.dart';
 import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
 import 'package:ql_moifood_app/resources/widgets/dialogs/app_utils.dart';
 import 'package:ql_moifood_app/views/auth/login_view.dart';
+import 'package:ql_moifood_app/views/customer/controller/user_controller.dart';
 
-class TopBar extends StatelessWidget {
+class TopBar extends StatefulWidget {
   const TopBar({super.key});
+
+  @override
+  State<TopBar> createState() => _TopBarState();
+}
+
+class _TopBarState extends State<TopBar> {
+  late final UserController _controller;
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = UserController(context);
+    Future.microtask(() {
+      _controller.loadUsers();
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   Future<void> _handleLogout(BuildContext context) async {
     final shouldLogout = await AppUtils.showConfirmDialog(
@@ -35,6 +60,11 @@ class TopBar extends StatelessWidget {
     debugPrint("Notification button tapped!");
   }
 
+  // Xử lý tìm kiếm
+  void _onSearchChanged(String query) {
+    _controller.searchUsers(query);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -53,26 +83,16 @@ class TopBar extends StatelessWidget {
         children: [
           // 🔍 Search Bar
           Expanded(
-            child: Container(
-              height: 48,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Tìm kiếm...',
-                  prefixIcon: Icon(
-                    Icons.search_rounded,
-                    color: Colors.grey.shade600,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                ),
-              ),
+            child: CustomTextField(
+              controller: _searchController,
+              isSearch: true,
+              hintText: 'Tìm kiếm...',
+              prefixIcon: Icons.search_rounded,
+              labelPosition: LabelPosition.none,
+              onChanged: _onSearchChanged,
+              onClear: () {
+                _onSearchChanged('');
+              },
             ),
           ),
 
@@ -88,17 +108,16 @@ class TopBar extends StatelessWidget {
             ),
             width: 48,
             height: 48,
-            // Đặt màu nền xám giống container gốc
             gradientColors: [Colors.grey.shade100, Colors.grey.shade100],
             borderRadius: 12,
-            // Tắt bóng đổ
             showShadow: false,
-            // Tinh chỉnh để Stack/icon lấp đầy 48x48
             size: 0,
             iconSize: 48,
           ),
 
           const SizedBox(width: 16),
+
+          // Logout Button
           CustomButton(
             tooltip: 'Đăng xuất',
             onTap: () => _handleLogout(context),

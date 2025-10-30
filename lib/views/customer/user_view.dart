@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ql_moifood_app/resources/widgets/TextFormField/custom_text_field.dart';
 import 'package:ql_moifood_app/viewmodels/user_viewmodel.dart';
 import 'package:ql_moifood_app/resources/theme/colors.dart';
 import 'package:ql_moifood_app/views/customer/controller/user_controller.dart';
@@ -39,7 +39,6 @@ class _UserViewState extends State<UserView> with TickerProviderStateMixin {
   }
 
   void _onSearchChanged(String query) {
-    // Có thể thêm debounce
     _controller.searchUsers(query);
   }
 
@@ -75,10 +74,7 @@ class _UserViewState extends State<UserView> with TickerProviderStateMixin {
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [
-                _buildActiveUsersList(),
-                _buildInactiveUsersList(),
-              ],
+              children: [_buildActiveUsersList(), _buildInactiveUsersList()],
             ),
           ),
         ],
@@ -98,30 +94,15 @@ class _UserViewState extends State<UserView> with TickerProviderStateMixin {
         // Thanh tìm kiếm
         SizedBox(
           width: 500,
-          child: TextField(
+          child: CustomTextField(
             controller: _searchController,
+            isSearch: true,
+            hintText: 'Tìm theo tên, email, SĐT...',
+            prefixIcon: Icons.search_rounded,
             onChanged: _onSearchChanged,
-            decoration: InputDecoration(
-              hintText: 'Tìm theo tên, email, SĐT...',
-              prefixIcon: const Icon(Icons.search_rounded),
-              suffixIcon: _searchController.text.isNotEmpty
-                  ? IconButton(
-                      icon: const Icon(Icons.close_rounded),
-                      onPressed: () {
-                        _searchController.clear();
-                        _onSearchChanged('');
-                      },
-                    )
-                  : null,
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-              filled: true,
-              fillColor: Colors.grey.shade100,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(24),
-                borderSide: BorderSide.none,
-              ),
-            ),
+            onClear: () {
+              _onSearchChanged('');
+            },
           ),
         ),
       ],
