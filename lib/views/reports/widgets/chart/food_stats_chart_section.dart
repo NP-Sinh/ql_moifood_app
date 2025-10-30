@@ -9,10 +9,10 @@ class FoodStatsChartSection extends StatelessWidget {
   final NumberFormat currencyFormatter;
 
   const FoodStatsChartSection({
-    Key? key,
+    super.key,
     required this.animation,
     required this.currencyFormatter,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +60,7 @@ class FoodStatsChartSection extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [
-                        Colors.orange,
-                        Colors.deepOrange,
-                      ],
+                      colors: [Colors.orange, Colors.deepOrange],
                     ),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
@@ -100,7 +97,10 @@ class FoodStatsChartSection extends StatelessWidget {
     );
   }
 
-  Widget _buildFoodPieChart(BuildContext context, StatisticViewModel viewModel) {
+  Widget _buildFoodPieChart(
+    BuildContext context,
+    StatisticViewModel viewModel,
+  ) {
     if (viewModel.isLoadingFoodStats) {
       return const SizedBox(
         height: 400,

@@ -5,8 +5,7 @@ import 'package:ql_moifood_app/viewmodels/statistic_viewmodel.dart';
 
 class StatisticListTab extends StatelessWidget {
   final NumberFormat currencyFormatter;
-  const StatisticListTab({Key? key, required this.currencyFormatter})
-    : super(key: key);
+  const StatisticListTab({super.key, required this.currencyFormatter});
 
   @override
   Widget build(BuildContext context) {

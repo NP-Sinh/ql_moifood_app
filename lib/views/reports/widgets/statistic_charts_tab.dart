@@ -9,10 +9,10 @@ class StatisticChartsTab extends StatelessWidget {
   final AnimationController animation;
 
   const StatisticChartsTab({
-    Key? key,
+    super.key,
     required this.currencyFormatter,
     required this.animation,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +34,7 @@ class StatisticChartsTab extends StatelessWidget {
               ),
               const SizedBox(width: 20),
               // Component con 2: Đơn hàng
-              Expanded(
-                child: OrderCountChartSection(
-                  animation: animation,
-                ),
-              ),
+              Expanded(child: OrderCountChartSection(animation: animation)),
             ],
           ),
           const SizedBox(height: 20),

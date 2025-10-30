@@ -6,8 +6,7 @@ import 'package:ql_moifood_app/viewmodels/statistic_viewmodel.dart';
 class OrderCountChartSection extends StatelessWidget {
   final AnimationController animation;
 
-  const OrderCountChartSection({Key? key, required this.animation})
-    : super(key: key);
+  const OrderCountChartSection({super.key, required this.animation});
 
   @override
   Widget build(BuildContext context) {

@@ -9,10 +9,10 @@ class RevenueChartSection extends StatelessWidget {
   final NumberFormat currencyFormatter;
 
   const RevenueChartSection({
-    Key? key,
+    super.key,
     required this.animation,
     required this.currencyFormatter,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +96,10 @@ class RevenueChartSection extends StatelessWidget {
     );
   }
 
-  Widget _buildRevenueBarChart(BuildContext context, StatisticViewModel viewModel) {
+  Widget _buildRevenueBarChart(
+    BuildContext context,
+    StatisticViewModel viewModel,
+  ) {
     if (viewModel.isLoadingRevenue) {
       return const SizedBox(
         height: 320,
