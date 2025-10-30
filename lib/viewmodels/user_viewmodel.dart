@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ql_moifood_app/api/api_user.dart';
 import 'package:ql_moifood_app/models/user.dart';
-import 'package:ql_moifood_app/resources/helpers/auth_storage.dart'; // Giả định
+import 'package:ql_moifood_app/resources/helpers/auth_storage.dart';
 
 class UserViewModel extends ChangeNotifier {
   final ApiUser _apiUser = ApiUser();
@@ -10,7 +10,6 @@ class UserViewModel extends ChangeNotifier {
   String? _errorMessage;
   List<User> _users = [];
 
-  // Getters cho UI
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
