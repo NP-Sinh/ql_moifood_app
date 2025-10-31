@@ -40,8 +40,17 @@ class ApiUrls {
   static final Uri getUserSpending = Uri.parse('${baseUrl}statistics/user-spending');
 
   // User
-   static final Uri getAllUser = Uri.parse('${baseUrl}user/get-all-user');
+  static final Uri getAllUser = Uri.parse('${baseUrl}user/get-all-user');
   static final Uri getUserById = Uri.parse('${baseUrl}user/get-user-by-id');
   static final Uri searchUser = Uri.parse('${baseUrl}user/search-user');
   static final Uri setActiveUser = Uri.parse('${baseUrl}user/set-active-user');
+
+  // notification
+  static final Uri getUserNotifications = Uri.parse('${baseUrl}notification');
+  static final Uri markAsRead = Uri.parse('${baseUrl}notification/mark-as-read');
+  static final Uri markAllAsRead = Uri.parse('${baseUrl}notification/mark-all-as-read');
+  static final Uri sendGlobalNotification = Uri.parse('${baseUrl}notification/admin/send-to-all');
+  static final Uri sendNotificationToUser = Uri.parse('${baseUrl}notification/admin/send-to-user');
+  static final Uri deleteNotification = Uri.parse('${baseUrl}notification/admin/delete');
+
 }

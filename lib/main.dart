@@ -6,6 +6,7 @@ import 'package:ql_moifood_app/resources/theme/theme.dart';
 import 'package:ql_moifood_app/viewmodels/auth_viewmodel.dart';
 import 'package:ql_moifood_app/viewmodels/category_viewmodel.dart';
 import 'package:ql_moifood_app/viewmodels/food_viewmodel.dart';
+import 'package:ql_moifood_app/viewmodels/notification_viewmodel.dart';
 import 'package:ql_moifood_app/viewmodels/order_viewmodel.dart';
 import 'package:ql_moifood_app/viewmodels/profile_viewmodel.dart';
 import 'package:ql_moifood_app/viewmodels/reviews_viewmodel.dart';
@@ -17,6 +18,7 @@ import 'package:ql_moifood_app/views/category/category_view.dart';
 import 'package:ql_moifood_app/views/customer/user_view.dart';
 import 'package:ql_moifood_app/views/manage_food/food_view.dart';
 import 'package:ql_moifood_app/views/manage_orders/order_view.dart';
+import 'package:ql_moifood_app/views/notification/notification_view.dart';
 import 'package:ql_moifood_app/views/reports/statistic_view.dart';
 import 'package:ql_moifood_app/views/review/review_view.dart';
 
@@ -49,6 +51,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => StatisticViewModel()),
         ChangeNotifierProvider(create: (_) => UserViewModel()),
         ChangeNotifierProvider(create: (_) => ReviewViewModel()),
+        ChangeNotifierProvider(create: (_) => NotificationViewModel())
       ],
       child: MyApp(initialRoute: initialRoute),
     ),
@@ -77,6 +80,7 @@ class MyApp extends StatelessWidget {
         StatisticView.routeName: (context) => const StatisticView(),
         UserView.routeName: (context) => const UserView(),
         ReviewView.routeName: (context) => const ReviewView(),
+        NotificationView.routeName: (context) => const NotificationView()
       },
     );
   }
