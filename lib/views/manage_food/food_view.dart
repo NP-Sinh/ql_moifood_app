@@ -103,7 +103,7 @@ class _FoodViewState extends State<FoodView> with TickerProviderStateMixin {
           child: CustomTextField(
             controller: _searchController,
             isSearch: true,
-            hintText: 'Tìm theo tên, email, SĐT...',
+            hintText: 'Tìm kiếm....',
             prefixIcon: Icons.search_rounded,
             onChanged: _controller.onSearchChanged,
             onClear: () {
