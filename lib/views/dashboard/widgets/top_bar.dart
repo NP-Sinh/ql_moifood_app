@@ -91,19 +91,20 @@ class _TopBarState extends State<TopBar> {
       child: Row(
         children: [
           // 🔍 Search Bar
-          Expanded(
-            child: CustomTextField(
-              controller: _searchController,
-              isSearch: true,
-              hintText: 'Tìm kiếm...',
-              prefixIcon: Icons.search_rounded,
-              labelPosition: LabelPosition.none,
-              onChanged: _onSearchChanged,
-              onClear: () {
-                _onSearchChanged('');
-              },
-            ),
-          ),
+          // Expanded(
+          //   child: CustomTextField(
+          //     controller: _searchController,
+          //     isSearch: true,
+          //     hintText: 'Tìm kiếm...',
+          //     prefixIcon: Icons.search_rounded,
+          //     labelPosition: LabelPosition.none,
+          //     onChanged: _onSearchChanged,
+          //     onClear: () {
+          //       _onSearchChanged('');
+          //     },
+          //   ),
+          // ),
+          const Spacer(),
 
           const SizedBox(width: 16),
 

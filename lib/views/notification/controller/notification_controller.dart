@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ql_moifood_app/models/notification.dart';
+import 'package:ql_moifood_app/models/user.dart';
 import 'package:ql_moifood_app/resources/widgets/dialogs/configs/snackbar_config.dart';
 import 'package:ql_moifood_app/viewmodels/notification_viewmodel.dart';
 import 'package:ql_moifood_app/resources/widgets/dialogs/app_utils.dart';
@@ -37,6 +38,8 @@ class NotificationController {
     String selectedType = 'info';
 
     AppUtils.showBaseModal(
+      width: 500,
+      maxHeight: 600,
       context,
       title: 'Gửi thông báo toàn hệ thống',
       child: NotificationForm(
@@ -97,18 +100,24 @@ class NotificationController {
   }
 
   // SEND TO USER
-  void showSendToUserModal() {
+  void showSendToUserModal({User? targetUser}) {
     final formKey = GlobalKey<FormState>();
-    final userIdController = TextEditingController();
+    final userIdController = targetUser == null
+        ? TextEditingController()
+        : null;
     final titleController = TextEditingController();
     final messageController = TextEditingController();
     String selectedType = 'info';
 
     AppUtils.showBaseModal(
       context,
-      title: 'Gửi thông báo cho người dùng',
+      width: 600,
+      title: targetUser != null
+          ? 'Gửi thông báo tới: ${targetUser.fullName}'
+          : 'Gửi thông báo cho người dùng',
       child: NotificationForm(
         formKey: formKey,
+        targetUser: targetUser,
         userIdController: userIdController,
         titleController: titleController,
         messageController: messageController,
@@ -141,7 +150,13 @@ class NotificationController {
               ? null
               : () async {
                   if (formKey.currentState?.validate() == true) {
-                    final userId = int.tryParse(userIdController.text.trim());
+                    int? userId;
+                    if (targetUser != null) {
+                      userId = targetUser.userId;
+                    } else if (userIdController != null) {
+                      userId = int.tryParse(userIdController.text.trim());
+                    }
+
                     if (userId == null) {
                       AppUtils.showSnackBar(
                         context,
@@ -167,7 +182,6 @@ class NotificationController {
                             ? SnackBarType.success
                             : SnackBarType.error,
                       );
-                      if (success) loadAllNotifications();
                     }
                   }
                 },

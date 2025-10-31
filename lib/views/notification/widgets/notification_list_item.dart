@@ -112,32 +112,33 @@ class _NotificationListItemState extends State<NotificationListItem> {
 
   Map<String, dynamic> _getTypeConfig(String type) {
     switch (type.toLowerCase()) {
-      case 'success':
+      case 'order':
         return {
-          'icon': Icons.check_circle_rounded,
+          'icon': Icons.receipt_long_rounded,
           'colors': [Colors.green.shade400, Colors.green.shade600],
-          'label': 'Thành công',
+          'label': 'Đơn hàng',
           'color': Colors.green.shade600,
         };
-      case 'warning':
+      case 'promotion':
         return {
-          'icon': Icons.warning_rounded,
+          'icon': Icons.sell_rounded,
           'colors': [Colors.orange.shade400, Colors.orange.shade600],
-          'label': 'Cảnh báo',
+          'label': 'Khuyến mãi',
           'color': Colors.orange.shade600,
         };
       case 'error':
         return {
-          'icon': Icons.error_rounded,
+          'icon': Icons.fastfood_rounded,
           'colors': [Colors.red.shade400, Colors.red.shade600],
-          'label': 'Lỗi',
+          'label': 'Món mới',
           'color': Colors.red.shade600,
         };
-      default: // info
+      case 'system':
+      default:
         return {
           'icon': Icons.info_rounded,
           'colors': [Colors.blue.shade400, Colors.blue.shade600],
-          'label': 'Thông tin',
+          'label': 'Hệ thống',
           'color': Colors.blue.shade600,
         };
     }

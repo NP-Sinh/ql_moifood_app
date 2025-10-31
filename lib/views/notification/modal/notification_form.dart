@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ql_moifood_app/models/user.dart';
+import 'package:ql_moifood_app/resources/theme/colors.dart';
 import 'package:ql_moifood_app/resources/widgets/TextFormField/custom_text_field.dart';
 
 class NotificationForm extends StatefulWidget {
@@ -10,6 +12,7 @@ class NotificationForm extends StatefulWidget {
   final String initialType;
   final ValueChanged<String> onTypeChanged;
   final bool isPersonal;
+  final User? targetUser;
 
   const NotificationForm({
     super.key,
@@ -20,6 +23,7 @@ class NotificationForm extends StatefulWidget {
     required this.initialType,
     required this.onTypeChanged,
     this.isPersonal = false,
+    this.targetUser,
   });
 
   @override
@@ -45,7 +49,10 @@ class _NotificationFormState extends State<NotificationForm> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (widget.isPersonal) ...[
+            if (widget.targetUser != null) ...[
+              _buildTargetUserInfo(widget.targetUser!),
+              const SizedBox(height: 16),
+            ] else if (widget.isPersonal) ...[
               CustomTextField(
                 controller: widget.userIdController!,
                 labelText: 'Mã người dùng',
@@ -99,6 +106,49 @@ class _NotificationFormState extends State<NotificationForm> {
     );
   }
 
+  // Lấy modal send userId
+  Widget _buildTargetUserInfo(User user) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.blue.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.account_circle_rounded,
+            color: AppColor.primary,
+            size: 40,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  user.fullName,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.primary,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'ID: ${user.userId} - ${user.email}',
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Build noti
   Widget _buildTypeSelector() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -115,20 +165,30 @@ class _NotificationFormState extends State<NotificationForm> {
         spacing: 12,
         runSpacing: 12,
         children: [
-          _buildTypeChip('info', 'Thông tin', Icons.info_rounded, Colors.blue),
           _buildTypeChip(
-            'success',
-            'Thành công',
-            Icons.check_circle_rounded,
+            'System',
+            'Hệ thống',
+            Icons.info_outline_rounded,
+            Colors.blue,
+          ),
+          _buildTypeChip(
+            'Order',
+            'Đơn hàng',
+            Icons.check_circle_outline_rounded,
             Colors.green,
           ),
           _buildTypeChip(
-            'warning',
-            'Cảnh báo',
-            Icons.warning_rounded,
+            'Promotion',
+            'Khuyến mãi',
+            Icons.warning_amber_rounded,
             Colors.orange,
           ),
-          _buildTypeChip('error', 'Lỗi', Icons.error_rounded, Colors.red),
+          _buildTypeChip(
+            'NewFood',
+            'Món mới',
+            Icons.fastfood_rounded,
+            Colors.red,
+          ),
         ],
       ),
     ],
