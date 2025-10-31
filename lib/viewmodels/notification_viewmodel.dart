@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:ql_moifood_app/api/api_notification.dart';
+import 'package:ql_moifood_app/models/global_notification.dart';
 import 'package:ql_moifood_app/models/notification.dart';
 import 'package:ql_moifood_app/resources/helpers/auth_storage.dart';
 
 class NotificationViewModel extends ChangeNotifier {
   final ApiNotifications _api = ApiNotifications();
 
-  // User notifications
+  // notifications by userId
   bool _isLoadingUser = false;
   bool get isLoadingUser => _isLoadingUser;
   List<NotificationModel> _userNotifications = [];
   List<NotificationModel> get userNotifications => _userNotifications;
 
-  // All notifications
-  bool _isLoadingAll = false;
-  bool get isLoadingAll => _isLoadingAll;
-  List<NotificationModel> _allNotifications = [];
-  List<NotificationModel> get allNotifications => _allNotifications;
+  // Global notifications
+  bool _isLoadingGlobal = false;
+  bool get isLoadingGlobal => _isLoadingGlobal;
+  List<GlobalNotification> _globalNotifications = [];
+  List<GlobalNotification> get globalNotifications => _globalNotifications;
 
   // Sending state
   bool _isSending = false;
@@ -42,8 +43,32 @@ class NotificationViewModel extends ChangeNotifier {
     return token;
   }
 
-  // ==================== USER ====================
-  Future<void> fetchUserNotifications({bool? isRead}) async {
+  // tải DL thông báo hệ thống
+  Future<void> fetchGlobalNotifications() async {
+    _isLoadingGlobal = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        _isLoadingGlobal = false;
+        notifyListeners();
+        return;
+      }
+      _globalNotifications = await _api.getGlobalNotifications(token: token);
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = e.toString();
+      _globalNotifications = [];
+    } finally {
+      _isLoadingGlobal = false;
+      notifyListeners();
+    }
+  }
+
+  // tải DL thông báo cá nhân
+  Future<void> fetchNotificationsByUserId(int? userId) async {
     _isLoadingUser = true;
     _errorMessage = null;
     notifyListeners();
@@ -55,9 +80,9 @@ class NotificationViewModel extends ChangeNotifier {
         notifyListeners();
         return;
       }
-      _userNotifications = await _api.getUserNotifications(
+      _userNotifications = await _api.getNotificationsByUserId(
         token: token,
-        isRead: isRead,
+        userId: userId,
       );
       _errorMessage = null;
     } catch (e) {
@@ -65,82 +90,6 @@ class NotificationViewModel extends ChangeNotifier {
       _userNotifications = [];
     } finally {
       _isLoadingUser = false;
-      notifyListeners();
-    }
-  }
-
-  Future<bool> markAsRead(int notificationId) async {
-    _errorMessage = null;
-    try {
-      final token = await _getToken();
-      if (token == null) return false;
-
-      final success = await _api.markAsRead(
-        token: token,
-        notificationId: notificationId,
-      );
-
-      if (success) {
-        // Update local state
-        final index = _userNotifications.indexWhere(
-          (n) => n.notificationId == notificationId,
-        );
-        if (index != -1) {
-          _userNotifications[index].isRead = true;
-          notifyListeners();
-        }
-      }
-      return success;
-    } catch (e) {
-      _errorMessage = e.toString();
-      notifyListeners();
-      return false;
-    }
-  }
-
-  Future<bool> markAllAsRead() async {
-    _errorMessage = null;
-    try {
-      final token = await _getToken();
-      if (token == null) return false;
-
-      final success = await _api.markAllAsRead(token: token);
-
-      if (success) {
-        // Update local state
-        for (var notification in _userNotifications) {
-          notification.isRead = true;
-        }
-        notifyListeners();
-      }
-      return success;
-    } catch (e) {
-      _errorMessage = e.toString();
-      notifyListeners();
-      return false;
-    }
-  }
-
-  // ==================== ADMIN ====================
-  Future<void> fetchAllNotifications() async {
-    _isLoadingAll = true;
-    _errorMessage = null;
-    notifyListeners();
-
-    try {
-      final token = await _getToken();
-      if (token == null) {
-        _isLoadingAll = false;
-        notifyListeners();
-        return;
-      }
-      _allNotifications = await _api.getAllNotifications(token: token);
-      _errorMessage = null;
-    } catch (e) {
-      _errorMessage = e.toString();
-      _allNotifications = [];
-    } finally {
-      _isLoadingAll = false;
       notifyListeners();
     }
   }
@@ -236,7 +185,7 @@ class NotificationViewModel extends ChangeNotifier {
       );
 
       if (success) {
-        _allNotifications.removeWhere(
+        _userNotifications.removeWhere(
           (n) => n.notificationId == notificationId,
         );
       }

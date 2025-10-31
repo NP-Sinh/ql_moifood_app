@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ql_moifood_app/models/global_notification.dart';
 import 'package:ql_moifood_app/models/notification.dart';
 import 'package:ql_moifood_app/models/user.dart';
 import 'package:ql_moifood_app/resources/widgets/dialogs/configs/snackbar_config.dart';
@@ -9,6 +10,7 @@ import 'package:ql_moifood_app/views/notification/modal/notification_form.dart';
 import 'package:ql_moifood_app/views/notification/modal/notification_detail_form.dart';
 import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
 import 'package:ql_moifood_app/resources/theme/colors.dart';
+import 'package:ql_moifood_app/views/notification/modal/notification_user_detail.dart';
 
 class NotificationController {
   final BuildContext context;
@@ -18,9 +20,21 @@ class NotificationController {
     _viewModel = context.read<NotificationViewModel>();
   }
 
-  // LOAD DATA
-  Future<void> loadAllNotifications() async {
-    await _viewModel.fetchAllNotifications();
+  // load Global Notifications
+  Future<void> loadGlobalNotifications() async {
+    await _viewModel.fetchGlobalNotifications();
+    if (_viewModel.errorMessage != null && context.mounted) {
+      AppUtils.showSnackBar(
+        context,
+        _viewModel.errorMessage!,
+        type: SnackBarType.error,
+      );
+    }
+  }
+
+  // load user Notifications
+  Future<void> loadUserNotifications([int? userId]) async {
+    await _viewModel.fetchNotificationsByUserId(userId);
     if (_viewModel.errorMessage != null && context.mounted) {
       AppUtils.showSnackBar(
         context,
@@ -35,7 +49,7 @@ class NotificationController {
     final formKey = GlobalKey<FormState>();
     final titleController = TextEditingController();
     final messageController = TextEditingController();
-    String selectedType = 'info';
+    String selectedType = 'System';
 
     AppUtils.showBaseModal(
       width: 500,
@@ -90,7 +104,7 @@ class NotificationController {
                             ? SnackBarType.success
                             : SnackBarType.error,
                       );
-                      if (success) loadAllNotifications();
+                      if (success) loadGlobalNotifications();
                     }
                   }
                 },
@@ -107,7 +121,7 @@ class NotificationController {
         : null;
     final titleController = TextEditingController();
     final messageController = TextEditingController();
-    String selectedType = 'info';
+    String selectedType = 'System';
 
     AppUtils.showBaseModal(
       context,
@@ -191,11 +205,24 @@ class NotificationController {
   }
 
   //  VIEW DETAIL
-  void showViewNotificationModal(NotificationModel notification) {
+  void showViewNotificationModal(GlobalNotification globalNotification) {
     AppUtils.showBaseModal(
       context,
       title: 'Chi tiết Thông báo',
-      child: NotificationDetailForm(notification: notification),
+      child: NotificationDetailForm(globalNotification: globalNotification),
+      secondaryAction: CustomButton(
+        label: 'Đóng',
+        onTap: () => Navigator.of(context).pop(),
+        gradientColors: [Colors.grey.shade500, Colors.grey.shade600],
+      ),
+    );
+  }
+
+  void showViewUserNotificationModal(NotificationModel notification) {
+    AppUtils.showBaseModal(
+      context,
+      title: 'Chi tiết Thông báo',
+      child: NotificationUserDetail(notification: notification),
       secondaryAction: CustomButton(
         label: 'Đóng',
         onTap: () => Navigator.of(context).pop(),
@@ -205,7 +232,7 @@ class NotificationController {
   }
 
   //  DELETE
-  void confirmDeleteNotification(NotificationModel notification) {
+  void confirmDeleteUserNotification(NotificationModel notification) {
     AppUtils.showConfirmDialog(
       context,
       title: 'Xác nhận xóa',

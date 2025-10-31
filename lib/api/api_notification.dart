@@ -1,22 +1,17 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:ql_moifood_app/api/api_urls.dart';
+import 'package:ql_moifood_app/models/global_notification.dart';
 import 'package:ql_moifood_app/models/notification.dart';
 
 class ApiNotifications {
-
-  /// Lấy danh sách thông báo của user (cả personal + global)
-  Future<List<NotificationModel>> getUserNotifications({
+  // lấy tất cả thông báo hệ thống
+  Future<List<GlobalNotification>> getGlobalNotifications({
     required String token,
-    bool? isRead,
   }) async {
     try {
-      final url = isRead != null
-          ? Uri.parse('${ApiUrls.getUserNotifications}?isRead=$isRead')
-          : ApiUrls.getUserNotifications;
-
       final response = await http.get(
-        url,
+        ApiUrls.getGlobalNotifications,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -25,7 +20,7 @@ class ApiNotifications {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
-        return data.map((json) => NotificationModel.fromJson(json)).toList();
+        return data.map((json) => GlobalNotification.fromJson(json)).toList();
       } else {
         throw Exception(
           'Lỗi tải thông báo: ${response.statusCode} - ${response.body}',
@@ -36,71 +31,19 @@ class ApiNotifications {
     }
   }
 
-  /// Đánh dấu một thông báo là đã đọc
-  /// POST /moifood/notification/mark-as-read?notificationId={id}
-  Future<bool> markAsRead({
+  /// Lấy thông báo của từng user (nếu userId = null thì lấy tất cả)
+  Future<List<NotificationModel>> getNotificationsByUserId({
     required String token,
-    required int notificationId,
+    int? userId,
   }) async {
     try {
-      final url = Uri.parse(
-        '${ApiUrls.markAsRead}?notificationId=$notificationId',
-      );
+      // ✅ Tạo URL đầy đủ, thêm query nếu có userId
+      final uri = userId != null
+          ? Uri.parse('${ApiUrls.getNotificationsByUserId}?userId=$userId')
+          : ApiUrls.getNotificationsByUserId;
 
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        throw Exception(
-          'Lỗi đánh dấu đã đọc: ${response.statusCode} - ${response.body}',
-        );
-      }
-    } catch (e) {
-      throw Exception('Lỗi kết nối: $e');
-    }
-  }
-
-  /// Đánh dấu tất cả thông báo là đã đọc
-  /// POST /moifood/notification/mark-all-as-read
-  Future<bool> markAllAsRead({required String token}) async {
-    try {
-      final response = await http.post(
-        ApiUrls.markAllAsRead,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        throw Exception(
-          'Lỗi đánh dấu tất cả đã đọc: ${response.statusCode} - ${response.body}',
-        );
-      }
-    } catch (e) {
-      throw Exception('Lỗi kết nối: $e');
-    }
-  }
-
-  // ADMIN 
-
-  /// Lấy tất cả thông báo 
-  /// GET /moifood/notification
-  Future<List<NotificationModel>> getAllNotifications({
-    required String token,
-  }) async {
-    try {
       final response = await http.get(
-        ApiUrls.getUserNotifications,
+        uri,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -121,7 +64,6 @@ class ApiNotifications {
   }
 
   /// Gửi thông báo toàn hệ thống
-  /// POST /moifood/notification/admin/send-to-all
   Future<bool> sendGlobalNotification({
     required String token,
     required String title,
@@ -157,7 +99,6 @@ class ApiNotifications {
   }
 
   /// Gửi thông báo cho một người dùng cụ thể
-  /// POST /moifood/notification/admin/send-to-user
   Future<bool> sendNotificationToUser({
     required String token,
     required int userId,
@@ -195,15 +136,12 @@ class ApiNotifications {
   }
 
   /// Xóa thông báo
-  /// POST /moifood/notification/admin/delete?id={id}
   Future<bool> deleteNotification({
     required String token,
     required int notificationId,
   }) async {
     try {
-      final url = Uri.parse(
-        '${ApiUrls.deleteNotification}?id=$notificationId',
-      );
+      final url = Uri.parse('${ApiUrls.deleteNotification}?id=$notificationId');
 
       final response = await http.post(
         url,

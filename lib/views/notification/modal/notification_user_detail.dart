@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:ql_moifood_app/models/global_notification.dart';
+import 'package:ql_moifood_app/models/notification.dart';
 import 'package:ql_moifood_app/resources/theme/colors.dart';
 import 'package:ql_moifood_app/resources/utils/formatter.dart';
 
-class NotificationDetailForm extends StatelessWidget {
-  final GlobalNotification globalNotification;
+class NotificationUserDetail extends StatelessWidget {
+  final NotificationModel notification;
 
-  const NotificationDetailForm({super.key, required this.globalNotification});
+  const NotificationUserDetail({super.key, required this.notification});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class NotificationDetailForm extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildTypeBadge(),
                 const SizedBox(height: 8),
-                _buildGlobalBadge(),
+                _buildReadBadge(notification.isRead!),
               ],
             ),
           ),
@@ -35,7 +35,7 @@ class NotificationDetailForm extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  globalNotification.title,
+                  notification.title,
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -43,17 +43,33 @@ class NotificationDetailForm extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 _buildInfoTile(
+                  icon: Icons.person_rounded,
+                  label: 'Người nhận',
+                  value: '${notification.fullName}',
+                  isPrimary: true,
+                ),
+                _buildInfoTile(
+                  icon: Icons.phone,
+                  label: 'Số điện thoại',
+                  value: '${notification.phone}',
+                ),
+                _buildInfoTile(
+                  icon: Icons.calendar_today_rounded,
+                  label: 'Email',
+                  value: '${notification.email}',
+                ),
+                _buildInfoTile(
                   icon: Icons.calendar_today_rounded,
                   label: 'Thời gian tạo',
-                  value: formatDateTime(globalNotification.createdAt),
+                  value: formatDateTime(notification.createdAt),
                 ),
                 _buildInfoTile(
                   icon: Icons.fingerprint_rounded,
                   label: 'Mã thông báo',
-                  value: '#${globalNotification.globalNotificationId}',
+                  value: '#${notification.notificationId}',
                 ),
                 const SizedBox(height: 16),
-                _buildMessageSection(globalNotification.message),
+                _buildMessageSection(notification.message),
               ],
             ),
           ),
@@ -64,9 +80,7 @@ class NotificationDetailForm extends StatelessWidget {
 
   // ICON
   Widget _buildIcon() {
-    final typeConfig = _getTypeConfig(
-      globalNotification.notificationType ?? "",
-    );
+    final typeConfig = _getTypeConfig(notification.notificationType);
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -130,9 +144,7 @@ class NotificationDetailForm extends StatelessWidget {
 
   //  BADGES
   Widget _buildTypeBadge() {
-    final typeConfig = _getTypeConfig(
-      globalNotification.notificationType ?? "",
-    );
+    final typeConfig = _getTypeConfig(notification.notificationType);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -154,30 +166,29 @@ class NotificationDetailForm extends StatelessWidget {
     );
   }
 
-  Widget _buildGlobalBadge() => Container(
+  Widget _buildReadBadge(bool isRead) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
     decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [Colors.purple.shade400, Colors.purple.shade600],
-      ),
+      color: isRead
+          ? Colors.green.withValues(alpha: 0.1)
+          : Colors.orange.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(20),
+      border: Border.all(
+        color: isRead
+            ? Colors.green.withValues(alpha: 0.4)
+            : Colors.orange.withValues(alpha: 0.4),
+      ),
     ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(Icons.public_rounded, size: 14, color: Colors.white),
-        const SizedBox(width: 4),
-        Text(
-          'Toàn hệ thống',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 11,
-            color: Colors.white,
-          ),
-        ),
-      ],
+    child: Text(
+      isRead ? 'Đã đọc' : 'Chưa đọc',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 11,
+        color: isRead ? Colors.green.shade700 : Colors.orange.shade700,
+      ),
     ),
   );
+
   //  INFO TILE
   Widget _buildInfoTile({
     required IconData icon,

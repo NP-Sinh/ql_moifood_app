@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:ql_moifood_app/models/global_notification.dart';
+import 'package:ql_moifood_app/models/notification.dart';
 import 'package:ql_moifood_app/resources/theme/colors.dart';
 import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
 import 'package:ql_moifood_app/resources/utils/formatter.dart';
 
-class NotificationListItem extends StatefulWidget {
-  final GlobalNotification globalNotification;
+class NotificationUserListItem extends StatefulWidget {
+  final NotificationModel notification;
   final VoidCallback? onView;
   final VoidCallback? onDelete;
 
-  const NotificationListItem({
+  const NotificationUserListItem({
     super.key,
-    required this.globalNotification,
+    required this.notification,
     this.onView,
     this.onDelete,
   });
 
   @override
-  State<NotificationListItem> createState() => _NotificationListItemState();
+  State<NotificationUserListItem> createState() =>
+      _NotificationUserListItemState();
 }
 
-class _NotificationListItemState extends State<NotificationListItem> {
+class _NotificationUserListItemState extends State<NotificationUserListItem> {
   bool _isHovered = false;
 
   @override
@@ -77,9 +78,7 @@ class _NotificationListItemState extends State<NotificationListItem> {
 
   //  ICON
   Widget _buildIcon() {
-    final typeConfig = _getTypeConfig(
-      widget.globalNotification.notificationType ?? "",
-    );
+    final typeConfig = _getTypeConfig(widget.notification.notificationType);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
@@ -154,7 +153,7 @@ class _NotificationListItemState extends State<NotificationListItem> {
         children: [
           Expanded(
             child: Text(
-              widget.globalNotification.title,
+              widget.notification.title,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -170,7 +169,7 @@ class _NotificationListItemState extends State<NotificationListItem> {
       ),
       const SizedBox(height: 8),
       Text(
-        widget.globalNotification.message,
+        widget.notification.message,
         style: TextStyle(
           fontSize: 14,
           color: Colors.grey.shade700,
@@ -189,21 +188,23 @@ class _NotificationListItemState extends State<NotificationListItem> {
           ),
           const SizedBox(width: 4),
           Text(
-            formatDateTime(widget.globalNotification.createdAt),
+            formatDateTime(widget.notification.createdAt),
             style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
           ),
           const SizedBox(width: 16),
           Icon(Icons.person_rounded, size: 14, color: Colors.grey.shade500),
           const SizedBox(width: 4),
+          Text(
+            'User: ${widget.notification.fullName}',
+            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+          ),
         ],
       ),
     ],
   );
 
   Widget _buildTypeBadge() {
-    final typeConfig = _getTypeConfig(
-      widget.globalNotification.notificationType ?? "",
-    );
+    final typeConfig = _getTypeConfig(widget.notification.notificationType);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -237,6 +238,17 @@ class _NotificationListItemState extends State<NotificationListItem> {
         icon: const Icon(Icons.visibility_rounded, color: Colors.white),
         gradientColors: [Colors.blue.shade400, Colors.blue.shade600],
         onTap: widget.onView,
+        borderRadius: 12,
+      ),
+      const SizedBox(width: 8),
+      CustomButton(
+        tooltip: "Xóa thông báo",
+        width: 44,
+        height: 44,
+        iconSize: 22,
+        icon: const Icon(Icons.delete_outline_rounded, color: Colors.white),
+        gradientColors: [Colors.redAccent.shade200, Colors.redAccent.shade400],
+        onTap: widget.onDelete,
         borderRadius: 12,
       ),
     ],
