@@ -51,13 +51,16 @@ class _FoodViewState extends State<FoodView> with TickerProviderStateMixin {
         children: [
           // Header và TabBar
           Container(
+            margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
             decoration: BoxDecoration(
               color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
+                  color: Colors.grey.shade300,
+                  blurRadius: 6,
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
