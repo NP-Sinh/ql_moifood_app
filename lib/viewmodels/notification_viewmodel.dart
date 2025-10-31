@@ -12,7 +12,7 @@ class NotificationViewModel extends ChangeNotifier {
   List<NotificationModel> _userNotifications = [];
   List<NotificationModel> get userNotifications => _userNotifications;
 
-  // Admin - All notifications
+  // All notifications
   bool _isLoadingAll = false;
   bool get isLoadingAll => _isLoadingAll;
   List<NotificationModel> _allNotifications = [];
