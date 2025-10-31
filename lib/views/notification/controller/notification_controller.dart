@@ -107,7 +107,6 @@ class NotificationController {
     AppUtils.showBaseModal(
       context,
       title: 'Gửi thông báo cho người dùng',
-      width: 800,
       child: NotificationForm(
         formKey: formKey,
         userIdController: userIdController,
