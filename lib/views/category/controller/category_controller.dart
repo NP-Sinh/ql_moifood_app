@@ -10,18 +10,20 @@ import 'package:ql_moifood_app/views/category/modals/category_form.dart';
 
 class CategoryController {
   final BuildContext context;
+  late final CategoryViewModel _viewModel;
 
-  CategoryController(this.context);
+  CategoryController(this.context) {
+    _viewModel = context.read<CategoryViewModel>();
+  }
 
   /// Tải danh mục
   Future<void> loadCategories() async {
-    final categoryVM = Provider.of<CategoryViewModel>(context, listen: false);
-    await categoryVM.fetchCategories();
+    await _viewModel.fetchCategories();
 
-    if (categoryVM.errorMessage != null) {
+    if (_viewModel.errorMessage != null && context.mounted) {
       AppUtils.showSnackBar(
         context,
-        'Lỗi tải danh mục: ${categoryVM.errorMessage}',
+        'Lỗi tải: ${_viewModel.errorMessage}',
         type: SnackBarType.error,
       );
     }

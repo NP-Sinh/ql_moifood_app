@@ -4,10 +4,10 @@ import 'package:ql_moifood_app/resources/widgets/TextFormField/custom_text_field
 import 'package:ql_moifood_app/viewmodels/food_viewmodel.dart';
 import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
 import 'package:ql_moifood_app/resources/theme/colors.dart';
+import 'package:ql_moifood_app/views/category/controller/category_controller.dart';
 import 'package:ql_moifood_app/views/manage_food/controller/food_controller.dart';
 import 'package:ql_moifood_app/views/manage_food/widgets/food_list_item.dart';
 import 'package:ql_moifood_app/views/manage_food/widgets/food_empty.dart';
-import 'package:ql_moifood_app/viewmodels/category_viewmodel.dart';
 
 class FoodView extends StatefulWidget {
   static const String routeName = '/food';
@@ -19,6 +19,7 @@ class FoodView extends StatefulWidget {
 
 class _FoodViewState extends State<FoodView> with TickerProviderStateMixin {
   late final FoodController _controller;
+  late final CategoryController _categoryController;
   late final TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
 
@@ -30,7 +31,7 @@ class _FoodViewState extends State<FoodView> with TickerProviderStateMixin {
 
     Future.microtask(() {
       _controller.loadFoods();
-      context.read<CategoryViewModel>().fetchCategories();
+      _categoryController.loadCategories();
     });
   }
 
