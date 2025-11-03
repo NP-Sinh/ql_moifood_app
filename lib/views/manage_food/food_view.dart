@@ -99,7 +99,7 @@ class _FoodViewState extends State<FoodView> with TickerProviderStateMixin {
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         SizedBox(
-          width: 750,
+          width: 600,
           child: CustomTextField(
             controller: _searchController,
             isSearch: true,
