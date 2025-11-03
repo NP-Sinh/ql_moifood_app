@@ -201,6 +201,7 @@ class FoodController {
       title: 'Xác nhận xóa',
       message: 'Bạn có chắc muốn xóa món "${food.name}" không?',
       confirmText: 'Xóa',
+      confirmColor: Colors.redAccent,
     ).then((confirmed) async {
       if (confirmed == true) {
         final success = await _viewModel.deleteFood(foodId: food.foodId);
