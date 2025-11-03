@@ -27,15 +27,15 @@ class SidebarMenu extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
+            AppColor.black.withValues(alpha: 0.9),
             AppColor.orange.withValues(alpha: 0.9),
-            AppColor.orange.withValues(alpha: 0.9),
-          ], 
+          ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColor.orange.withValues(alpha: 0.2), 
+            color: AppColor.orange.withValues(alpha: 0.2),
             blurRadius: 20,
             offset: const Offset(4, 0),
           ),
@@ -51,7 +51,7 @@ class SidebarMenu extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2), 
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
@@ -158,7 +158,7 @@ class SidebarMenu extends StatelessWidget {
             margin: const EdgeInsets.all(12),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15), 
+              color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(

@@ -452,8 +452,11 @@ class _StatisticViewState extends State<StatisticView>
           ),
         ],
         indicator: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Colors.orangeAccent, Colors.deepOrange],
+          gradient: LinearGradient(
+            colors: [
+              AppColor.black.withValues(alpha: 0.9),
+              AppColor.orange.withValues(alpha: 0.9),
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),

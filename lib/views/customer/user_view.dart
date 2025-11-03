@@ -131,7 +131,10 @@ class _UserViewState extends State<UserView> with TickerProviderStateMixin {
           ],
           indicator: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.orangeAccent, Colors.deepOrange],
+              colors: [
+                AppColor.black.withValues(alpha: 0.9),
+                AppColor.orange.withValues(alpha: 0.9),
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
