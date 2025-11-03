@@ -27,6 +27,7 @@ class _FoodViewState extends State<FoodView> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _controller = FoodController(context);
+    _categoryController = CategoryController(context);
     _tabController = TabController(length: 3, vsync: this);
 
     Future.microtask(() {

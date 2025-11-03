@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 String formatVND(num vnd) {
@@ -30,4 +31,32 @@ String formatDateTime2(DateTime? date) {
   if (date == null) return '';
   final formatter = DateFormat('HH:mm dd/MM/yyyy', 'vi_VN');
   return formatter.format(date);
+}
+
+
+// định dạng tiền tệ
+class CurrencyInputFormatter extends TextInputFormatter {
+  final NumberFormat _formatter = NumberFormat("#,###", "vi_VN");
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    // Xóa ký tự không phải số
+    String digits = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (digits.isEmpty) {
+      return const TextEditingValue(text: '');
+    }
+
+    // Định dạng theo kiểu 20.000 VND
+    final number = int.parse(digits);
+    final newText = '${_formatter.format(number)} VND';
+
+    // Trả về giá trị mới
+    return TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: newText.length - 4),
+    );
+  }
 }

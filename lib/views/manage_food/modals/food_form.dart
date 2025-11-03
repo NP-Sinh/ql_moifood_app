@@ -47,16 +47,18 @@ class _FoodFormState extends State<FoodForm> {
     if (widget.food != null) {
       widget.nameController.text = widget.food!.name;
       widget.descriptionController.text = widget.food!.description;
-      widget.priceController.text = widget.food!.price.toStringAsFixed(0); 
+      widget.priceController.text = widget.food!.price.toStringAsFixed(0);
       try {
-        _selectedCategory = widget.categories
-            .firstWhere((c) => c.categoryId == widget.food!.categoryId);
+        _selectedCategory = widget.categories.firstWhere(
+          (c) => c.categoryId == widget.food!.categoryId,
+        );
       } catch (e) {
-        _selectedCategory = widget.categories.isNotEmpty ? widget.categories.first : null;
+        _selectedCategory = widget.categories.isNotEmpty
+            ? widget.categories.first
+            : null;
       }
     }
   }
-
 
   Future<void> _pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -92,7 +94,7 @@ class _FoodFormState extends State<FoodForm> {
                     return null;
                   },
                 ),
-                
+
                 CustomTextField(
                   controller: widget.descriptionController,
                   labelText: "Mô tả",
@@ -100,7 +102,7 @@ class _FoodFormState extends State<FoodForm> {
                   prefixIcon: Icons.description_rounded,
                   maxLines: 2,
                 ),
-                
+
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -108,12 +110,12 @@ class _FoodFormState extends State<FoodForm> {
                       flex: 1,
                       child: CustomTextField(
                         controller: widget.priceController,
-                        labelText: "Giá (VNĐ)", 
+                        labelText: "Giá (VNĐ)",
                         hintText: "Nhập giá bán",
                         prefixIcon: Icons.attach_money_rounded,
                         keyboardType: TextInputType.number,
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
+                          FilteringTextInputFormatter.digitsOnly,
                         ],
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
@@ -137,17 +139,21 @@ class _FoodFormState extends State<FoodForm> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                           Padding(
-                             padding: const EdgeInsets.only(left: 4.0, bottom: 6.0, top: 4.0),
-                             child: Text(
-                               "Danh mục",
-                               style: TextStyle(
-                                 fontSize: 14,
-                                 fontWeight: FontWeight.w500,
-                                 color: Colors.black87,
-                               ),
-                             ),
-                           ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 4.0,
+                              bottom: 6.0,
+                              top: 4.0,
+                            ),
+                            child: Text(
+                              "Danh mục",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
                           DropdownButtonFormField<Category>(
                             value: _selectedCategory,
                             decoration: InputDecoration(
@@ -159,7 +165,7 @@ class _FoodFormState extends State<FoodForm> {
                                 vertical: 14,
                                 horizontal: 16,
                               ),
-                              hintText: 'Chọn danh mục', 
+                              hintText: 'Chọn danh mục',
                             ),
                             items: widget.categories.map((Category category) {
                               return DropdownMenuItem<Category>(
@@ -190,7 +196,7 @@ class _FoodFormState extends State<FoodForm> {
             ),
           ),
 
-          const SizedBox(width: 24), 
+          const SizedBox(width: 24),
           Expanded(
             flex: 4,
             child: Column(
@@ -198,8 +204,11 @@ class _FoodFormState extends State<FoodForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.only(left: 4.0, bottom: 6.0, top: 4.0),
+                  padding: const EdgeInsets.only(
+                    left: 4.0,
+                    bottom: 6.0,
+                    top: 4.0,
+                  ),
                   child: Text(
                     "Ảnh đại diện",
                     style: TextStyle(
@@ -240,28 +249,32 @@ class _FoodFormState extends State<FoodForm> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: (_pickedImage != null)
-                ? _buildImageDisplay(Image.file(File(_pickedImage!.path), fit: BoxFit.cover)) 
+                ? _buildImageDisplay(
+                    Image.file(File(_pickedImage!.path), fit: BoxFit.cover),
+                  )
                 : (existingImageUrl != null && existingImageUrl.isNotEmpty)
-                    ? _buildImageDisplay(Image.network(existingImageUrl, fit: BoxFit.cover)) 
-                    : Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.image_rounded,
-                            size: 40,
-                            color: Colors.grey.shade500,
-                          ),
-                          const SizedBox(height: 8),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Text(
-                              'Chọn ảnh (Bỏ trống nếu giữ ảnh cũ)',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.grey.shade700),
-                            ),
-                          ),
-                        ],
+                ? _buildImageDisplay(
+                    Image.network(existingImageUrl, fit: BoxFit.cover),
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.image_rounded,
+                        size: 40,
+                        color: Colors.grey.shade500,
                       ),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text(
+                          'Chọn ảnh (Bỏ trống nếu giữ ảnh cũ)',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.grey.shade700),
+                        ),
+                      ),
+                    ],
+                  ),
           ),
         ),
       ),
@@ -270,12 +283,12 @@ class _FoodFormState extends State<FoodForm> {
 
   Widget _buildImageDisplay(Image imageProvider) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(10), 
+      borderRadius: BorderRadius.circular(10),
       child: Stack(
         alignment: Alignment.center,
         fit: StackFit.expand,
         children: [
-          imageProvider, 
+          imageProvider,
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -285,8 +298,8 @@ class _FoodFormState extends State<FoodForm> {
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                stops: const [0.6, 1.0], 
-              )
+                stops: const [0.6, 1.0],
+              ),
             ),
           ),
           const Positioned(
@@ -299,10 +312,8 @@ class _FoodFormState extends State<FoodForm> {
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: 13, 
-                shadows: [ 
-                  Shadow(blurRadius: 2, color: Colors.black54)
-                ]
+                fontSize: 13,
+                shadows: [Shadow(blurRadius: 2, color: Colors.black54)],
               ),
             ),
           ),

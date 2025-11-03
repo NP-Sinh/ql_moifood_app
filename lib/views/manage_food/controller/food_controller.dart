@@ -173,6 +173,9 @@ class FoodController {
                       : vm.errorMessage ?? 'Thao tác thất bại',
                   type: success ? SnackBarType.success : SnackBarType.error,
                 );
+                if (success) {
+                  await vm.fetchFoods();
+                }
               }
             }
           },
