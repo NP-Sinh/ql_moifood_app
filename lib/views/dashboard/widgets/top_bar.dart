@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ql_moifood_app/resources/helpers/auth_storage.dart';
-import 'package:ql_moifood_app/resources/widgets/TextFormField/custom_text_field.dart';
 import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
 import 'package:ql_moifood_app/resources/widgets/dialogs/app_utils.dart';
 import 'package:ql_moifood_app/views/auth/login_view.dart';
@@ -70,9 +69,9 @@ class _TopBarState extends State<TopBar> {
   }
 
   // Xử lý tìm kiếm
-  void _onSearchChanged(String query) {
-    _controller.searchUsers(query);
-  }
+  // void _onSearchChanged(String query) {
+  //   _controller.searchUsers(query);
+  // }
 
   @override
   Widget build(BuildContext context) {
