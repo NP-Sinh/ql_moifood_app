@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:ql_moifood_app/resources/theme/colors.dart';
 import 'package:ql_moifood_app/viewmodels/statistic_viewmodel.dart';
 import 'package:ql_moifood_app/views/reports/widgets/statistic_charts_tab.dart';
-import 'package:ql_moifood_app/views/reports/widgets/statistic_list_tab.dart';
+import 'package:ql_moifood_app/views/reports/widgets/list/statistic_list_tab.dart';
 
 class StatisticView extends StatefulWidget {
   static const String routeName = '/statistic';
