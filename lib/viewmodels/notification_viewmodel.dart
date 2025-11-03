@@ -94,6 +94,7 @@ class NotificationViewModel extends ChangeNotifier {
     }
   }
 
+  // send Global Notification
   Future<bool> sendGlobalNotification({
     required String title,
     required String message,
@@ -129,6 +130,7 @@ class NotificationViewModel extends ChangeNotifier {
     }
   }
 
+  // send Notification To User
   Future<bool> sendNotificationToUser({
     required int userId,
     required String title,
@@ -166,6 +168,7 @@ class NotificationViewModel extends ChangeNotifier {
     }
   }
 
+  // delete
   Future<bool> deleteNotification(int notificationId) async {
     _isDeleting = true;
     _errorMessage = null;
