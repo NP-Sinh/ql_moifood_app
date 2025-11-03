@@ -80,7 +80,24 @@ class _StatisticViewState extends State<StatisticView>
       backgroundColor: Colors.grey.shade100,
       body: Column(
         children: [
-          _buildHeaderSection(),
+          // Header và TabBar
+          Container(
+            margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.shade300,
+                  blurRadius: 6,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(children: [_buildHeaderSection()]),
+          ),
+          // TabBarView
           Expanded(child: _buildTabBarView()),
         ],
       ),
