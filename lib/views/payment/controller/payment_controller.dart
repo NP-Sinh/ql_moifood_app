@@ -97,7 +97,7 @@ class PaymentController {
     );
   }
 
-  // DELETE REVIEW
+  // DELETE
   void confirmPaymentMethod(PaymentMethod paymetMethod) {
     AppUtils.showConfirmDialog(
       context,
