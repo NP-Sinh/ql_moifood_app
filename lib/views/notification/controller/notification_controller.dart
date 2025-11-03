@@ -196,6 +196,9 @@ class NotificationController {
                             ? SnackBarType.success
                             : SnackBarType.error,
                       );
+                      if (success) {
+                        loadUserNotifications();
+                      }
                     }
                   }
                 },

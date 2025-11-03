@@ -224,7 +224,6 @@ class _NotificationViewState extends State<NotificationView>
   }
 
   // TAB 2: USER NOTIFICATIONS LIST
-  // TAB 2: USER NOTIFICATIONS LIST
   Widget _buildUserNotificationsList() {
     return Consumer<NotificationViewModel>(
       builder: (context, vm, _) {
