@@ -49,4 +49,19 @@ class User {
           : null,
     );
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'userId': userId,
+      'username': userName,
+      'fullName': fullName,
+      'email': email,
+      'phone': phone,
+      'address': address,
+      'avatar': avatar,
+      'role': role,
+      'isActive': isActive,
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
+    };
+  }
 }

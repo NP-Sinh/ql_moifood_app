@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:ql_moifood_app/resources/helpers/auth_storage.dart';
@@ -26,6 +27,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await initializeDateFormatting('vi_VN', null);
+  await dotenv.load(fileName: ".env");
 
   // Kiểm tra đăng nhập
   final isLoggedIn = await AuthStorage.isLoggedIn();
@@ -51,7 +53,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => StatisticViewModel()),
         ChangeNotifierProvider(create: (_) => UserViewModel()),
         ChangeNotifierProvider(create: (_) => ReviewViewModel()),
-        ChangeNotifierProvider(create: (_) => NotificationViewModel())
+        ChangeNotifierProvider(create: (_) => NotificationViewModel()),
       ],
       child: MyApp(initialRoute: initialRoute),
     ),
@@ -80,7 +82,7 @@ class MyApp extends StatelessWidget {
         StatisticView.routeName: (context) => const StatisticView(),
         UserView.routeName: (context) => const UserView(),
         ReviewView.routeName: (context) => const ReviewView(),
-        NotificationView.routeName: (context) => const NotificationView()
+        NotificationView.routeName: (context) => const NotificationView(),
       },
     );
   }

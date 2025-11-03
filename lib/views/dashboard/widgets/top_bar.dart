@@ -3,6 +3,7 @@ import 'package:ql_moifood_app/resources/helpers/auth_storage.dart';
 import 'package:ql_moifood_app/resources/widgets/buttons/custom_button.dart';
 import 'package:ql_moifood_app/resources/widgets/dialogs/app_utils.dart';
 import 'package:ql_moifood_app/views/auth/login_view.dart';
+import 'package:ql_moifood_app/views/chat/chatbot_modal_content.dart';
 import 'package:ql_moifood_app/views/customer/controller/user_controller.dart';
 
 class TopBar extends StatefulWidget {
@@ -51,6 +52,17 @@ class _TopBarState extends State<TopBar> {
         );
       }
     }
+  }
+
+  void _showChatBotView(BuildContext context) {
+    // Sử dụng showDialog chuẩn của Flutter
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        // Trả về widget Dialog riêng của chúng ta
+        return const ChatbotDialog();
+      },
+    );
   }
 
   // Xử lý khi bấm Thông báo
@@ -114,7 +126,7 @@ class _TopBarState extends State<TopBar> {
 
           // Chat Bot Icon
           CustomButton(
-            onTap: () {},
+            onTap: () => _showChatBotView(context),
             tooltip: 'Chat Bot AI',
             icon: Image.asset(
               'assets/icons/generative.png',
