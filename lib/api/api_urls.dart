@@ -54,4 +54,10 @@ class ApiUrls {
   static final Uri sendNotificationToUser = Uri.parse('${baseUrl}notification/admin/send-to-user');
   static final Uri deleteNotification = Uri.parse('${baseUrl}notification/admin/delete');
 
+// payment method
+  static final Uri getAllPaymentMethods = Uri.parse('${baseUrl}payment/get-payment-method');
+  static final Uri getPaymentMethodById = Uri.parse('${baseUrl}payment/get-payment-method-by-id');
+  static final Uri modifyPaymentMethods = Uri.parse('${baseUrl}payment/modify-payment-method');
+  static final Uri deletePaymentMethod = Uri.parse('${baseUrl}payment/delete-payment-method');
+
 }

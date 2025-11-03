@@ -7,6 +7,7 @@ import 'package:ql_moifood_app/views/dashboard/overview_content.dart';
 import 'package:ql_moifood_app/views/manage_food/food_view.dart';
 import 'package:ql_moifood_app/views/manage_orders/order_view.dart';
 import 'package:ql_moifood_app/views/notification/notification_view.dart';
+import 'package:ql_moifood_app/views/payment/payment_view.dart';
 import 'package:ql_moifood_app/views/reports/statistic_view.dart';
 import 'package:ql_moifood_app/views/review/review_view.dart';
 import 'package:ql_moifood_app/views/settings/setting_view.dart';
@@ -31,6 +32,7 @@ class _DashboardViewState extends State<DashboardView> {
     {'icon': Icons.analytics_rounded, 'label': 'Thống kê'},
     {'icon': Icons.rate_review, 'label': 'Đánh giá'},
     {'icon': Icons.edit_notifications, 'label': 'Thông báo'},
+    {'icon': Icons.payment, 'label': 'Thanh toán'},
     {'icon': Icons.settings_rounded, 'label': 'Cài đặt'},
   ];
 
@@ -53,6 +55,8 @@ class _DashboardViewState extends State<DashboardView> {
       case 7:
         return const NotificationView();
       case 8:
+        return const PaymentView();
+      case 9:
         return const SettingsView();
       default:
         return OverviewContent(isDesktop: isDesktop, isTablet: isTablet);
