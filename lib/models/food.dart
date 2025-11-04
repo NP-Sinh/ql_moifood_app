@@ -39,4 +39,17 @@ class Food {
       isActive: json['isActive'] ?? false,
     );
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'foodId': foodId,
+      'name': name,
+      'description': description,
+      'price': price,
+      'imageUrl': imageUrl,
+      'categoryId': categoryId,
+      'categoryName': categoryName,
+      'isAvailable': isAvailable,
+      'isActive': isActive,
+    };
+  }
 }

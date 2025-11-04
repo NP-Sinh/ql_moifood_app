@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:provider/provider.dart';
+import 'package:ql_moifood_app/models/food.dart';
 import 'package:ql_moifood_app/models/global_notification.dart';
+import 'package:ql_moifood_app/viewmodels/food_viewmodel.dart';
 
 import 'package:ql_moifood_app/viewmodels/order_viewmodel.dart';
 import 'package:ql_moifood_app/models/order.dart';
@@ -115,6 +117,7 @@ Câu hỏi: $question
       final userVM = context.read<UserViewModel>();
       final reviewVM = context.read<ReviewViewModel>();
       final notificationVM = context.read<NotificationViewModel>();
+      final foodVM = context.read<FoodViewModel>();
 
       // Tải TẤT CẢ dữ liệu đồng thời bằng Future.wait
       await Future.wait([
@@ -122,6 +125,7 @@ Câu hỏi: $question
         userVM.fetchUsers(),
         reviewVM.fetchAllReviews(),
         notificationVM.fetchGlobalNotifications(),
+        foodVM.fetchFoods(),
       ]);
 
       // Kiểm tra lỗi
@@ -130,6 +134,7 @@ Câu hỏi: $question
         userVM.errorMessage,
         reviewVM.errorMessage,
         notificationVM.errorMessage,
+        foodVM.errorMessage,
       ].where((e) => e != null).toList();
 
       if (errors.isNotEmpty && context.mounted) {
@@ -145,12 +150,15 @@ Câu hỏi: $question
       final List<Review> reviews = reviewVM.allReviews;
       final List<GlobalNotification> globalNotifs =
           notificationVM.globalNotifications;
+      final List<Food> foods =
+          foodVM.availableFoods + foodVM.deletedFoods + foodVM.unavailableFoods;
 
       final Map<String, dynamic> allData = {
         'orders': orders.map((o) => o.toJson()).toList(),
         'users': users.map((u) => u.toJson()).toList(),
         'reviews': reviews.map((r) => r.toJson()).toList(),
         'notifications': globalNotifs.map((n) => n.toJson()).toList(),
+        'foods': foods.map((f) => f.toJson()).toList(),
       };
 
       final String aggregatedDataJson = jsonEncode(allData);
