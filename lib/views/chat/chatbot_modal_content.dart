@@ -85,7 +85,6 @@ $aggregatedData
 
 Hãy trả lời câu hỏi của admin một cách ngắn gọn, chuyên nghiệp, bằng tiếng Việt.
 Dựa vào tất cả dữ liệu được cung cấp (đơn hàng, người dùng, review, thông báo) để trả lời.
-
 Câu hỏi: $question
 """;
 
