@@ -25,11 +25,32 @@ import 'package:ql_moifood_app/views/payment/payment_view.dart';
 import 'package:ql_moifood_app/views/reports/statistic_view.dart';
 import 'package:ql_moifood_app/views/review/review_view.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await initializeDateFormatting('vi_VN', null);
   await dotenv.load(fileName: ".env");
+
+  // Setup callback khi token hết hạn
+  AuthStorage.onTokenExpired = () {
+    navigatorKey.currentState?.pushNamedAndRemoveUntil(
+      LoginView.routeName,
+      (route) => false,
+    );
+    
+    final context = navigatorKey.currentContext;
+    if (context != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.'),
+          backgroundColor: Colors.orange,
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+  };
 
   // Kiểm tra đăng nhập
   final isLoggedIn = await AuthStorage.isLoggedIn();
@@ -75,6 +96,7 @@ class MyApp extends StatelessWidget {
       darkTheme: darkTheme,
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey, 
       initialRoute: initialRoute,
       routes: {
         LoginView.routeName: (context) => const LoginView(),

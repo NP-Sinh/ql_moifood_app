@@ -45,17 +45,15 @@ class _LoginViewState extends State<LoginView> {
 
     if (result != null) {
       try {
-        final token = result.refreshToken.token;
-        await profileVM.loadProfile(token);
+        await AuthStorage.saveLoginData(result);
+        await profileVM.loadProfile();
 
         if (profileVM.user == null) {
           await Future.delayed(const Duration(milliseconds: 300));
         }
 
         final role = profileVM.user?.role ?? 'User';
-        // debugPrint("User role: $role");
-
-        await AuthStorage.saveLogin(token, role: role);
+        debugPrint("User role: $role");
 
         if (role == 'Admin') {
           Navigator.pushReplacementNamed(context, DashboardView.routeName);
