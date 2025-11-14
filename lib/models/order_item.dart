@@ -22,7 +22,7 @@ class OrderItem {
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     String img = json['foodImageUrl'] ?? '';
     if (!img.startsWith('http')) {
-      img = "http://localhost:5046$img";
+      img = "https://localhost:7128$img";
     }
     return OrderItem(
       orderItemId: json['orderItemId'] ?? 0,

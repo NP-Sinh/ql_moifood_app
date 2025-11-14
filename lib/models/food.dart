@@ -24,7 +24,7 @@ class Food {
   factory Food.fromJson(Map<String, dynamic> json) {
     String img = json['imageUrl'] ?? '';
     if (!img.startsWith('http')) {
-      img = "http://localhost:5046$img";
+      img = "https://localhost:7128$img";
     }
 
     return Food(

@@ -1,5 +1,5 @@
 class ApiUrls {
-  static const String baseUrl = 'http://localhost:5046/moifood/';
+  static const String baseUrl = 'https://localhost:7128/moifood/';
 
   // Auth
   static final Uri login = Uri.parse('${baseUrl}auth/login');
