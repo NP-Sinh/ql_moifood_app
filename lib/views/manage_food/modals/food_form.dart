@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ql_moifood_app/models/food.dart';
@@ -38,6 +39,7 @@ class FoodForm extends StatefulWidget {
 class _FoodFormState extends State<FoodForm> {
   XFile? _pickedImage;
   Category? _selectedCategory;
+  Uint8List? _imageBytes;
   final ImagePicker _picker = ImagePicker();
 
   @override
@@ -63,8 +65,10 @@ class _FoodFormState extends State<FoodForm> {
   Future<void> _pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
+      final bytes = await image.readAsBytes();
       setState(() {
         _pickedImage = image;
+        _imageBytes = bytes;
       });
       widget.onImagePicked(_pickedImage);
     }
@@ -250,7 +254,8 @@ class _FoodFormState extends State<FoodForm> {
             ),
             child: (_pickedImage != null)
                 ? _buildImageDisplay(
-                    Image.file(File(_pickedImage!.path), fit: BoxFit.cover),
+                    // Image.file(File(_pickedImage!.path), fit: BoxFit.cover),
+                    Image.memory(_imageBytes!, fit: BoxFit.cover),
                   )
                 : (existingImageUrl != null && existingImageUrl.isNotEmpty)
                 ? _buildImageDisplay(

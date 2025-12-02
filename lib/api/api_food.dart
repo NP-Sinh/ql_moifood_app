@@ -50,7 +50,7 @@ class FoodApi {
     }
   }
 
-   // Search user
+  // Search user
   Future<List<Food>> searchFood({
     required String keyword,
     required String token,
@@ -97,13 +97,31 @@ class FoodApi {
       request.fields['Description'] = description;
       request.fields['Price'] = price.toStringAsFixed(0);
       request.fields['CategoryId'] = categoryId.toString();
-      if (imageFile != null) {
-        final mimeType = lookupMimeType(imageFile.path) ?? 'image/jpeg';
+      // if (imageFile != null) {
+      //   final mimeType = lookupMimeType(imageFile.path) ?? 'image/jpeg';
 
+      //   request.files.add(
+      //     await http.MultipartFile.fromPath(
+      //       'ImageUrl',
+      //       imageFile.path,
+      //       contentType: MediaType.parse(mimeType),
+      //     ),
+      //   );
+      // }
+      if (imageFile != null) {
+        // Đọc bytes từ file
+        final bytes = await imageFile.readAsBytes();
+
+        // Lấy tên file và mime type
+        final fileName = imageFile.name;
+        final mimeType = lookupMimeType(fileName) ?? 'image/jpeg';
+
+        // Tạo MultipartFile từ bytes
         request.files.add(
-          await http.MultipartFile.fromPath(
+          http.MultipartFile.fromBytes(
             'ImageUrl',
-            imageFile.path,
+            bytes,
+            filename: fileName,
             contentType: MediaType.parse(mimeType),
           ),
         );
