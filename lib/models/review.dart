@@ -32,7 +32,7 @@ class Review {
     if (imageUrl != null &&
         imageUrl.isNotEmpty &&
         !imageUrl.startsWith('http')) {
-      imageUrl = "https://localhost:7128$imageUrl";
+      imageUrl = "http://localhost:5046$imageUrl";
     }
 
     return Review(

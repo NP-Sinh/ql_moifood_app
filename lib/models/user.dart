@@ -28,7 +28,7 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     String avatar = json['avatar'] ?? '';
     if (!avatar.startsWith('http')) {
-      avatar = "https://localhost:7128$avatar";
+      avatar = "http://localhost:5046$avatar";
     }
 
     return User(
